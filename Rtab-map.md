@@ -35,6 +35,6 @@ https://projects.asl.ethz.ch/datasets/doku.php?id=kmavvisualinertialdatasets
 
 先source
 ----------------------------------
-roslaunch rtabmap_ros euroc_datasets.launch MH_seq:=true
+roslaunch rtabmap_examples euroc_datasets.launch MH_seq:=true
 # 另起一个新终端
 rosbag play --clock MH_01_easy.bag
