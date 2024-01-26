@@ -93,9 +93,9 @@ rosbag play -r 200 imu.bag
 
 
 会在data文件夹下生成个yaml文件
-例子
+### 例子
 %YAML:1.0
----
+
 type: IMU
 name: my_imu
 Gyr:
