@@ -1,7 +1,9 @@
 # 安装docker 
 https://github.com/ethz-asl/kalibr/wiki/installation
 用18.04docker镜像
+
 启动
+
 docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix:rw --privileged --gpus all -e DISPLAY=:1 -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=all -e PYTHONUNBUFFERED=1 -e QT_X11_NO_MITSHM=1 kalibr:latest /bin/bash
 ------------------------------------
 # imu标定过程
