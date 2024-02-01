@@ -186,30 +186,38 @@ roslaunch vins vins_rviz.launch
  
 rosrun vins kitti_odom_test ~/catkin_ws/src/VINS-Fusion/config/kitti_odom/kitti_config00-02.yaml YOUR_DATASET_FOLDER/sequences/00/ 
 ```
-
- 
-
  
 
 rosrun vins kitti_odom_test ~/catkin_ws1/src/VINS-Fusion/config/kitti_odom/kitti_config00-02.yaml ~/Downloads/00/
-
  
 
- 
+**ROS2 版本** （实现）
 
- 
+**搜这个的时候搜出来的**
 
- 
+https://github.com/zinuok/VINS-Fusion-ROS2
 
+**参考这个issue**
+https://github.com/zinuok/VINS-Fusion-ROS2/issues/8
 
+“@cvirxsc Try this one: https://github.com/bonabai/VINS-Fusion-ROS2.git, and checkout no_cuda branch.”
 
- 
+**用这个作者的**
+https://github.com/bonabai/VINS-Fusion-ROS2
 
-**ROS2 版本** （未实现）
+**依赖**
+环境是ubuntu 22.04   roshumble
+opencv 应该是自带的
 
-安装ceres
+Eigen-3.3.9
+Ceres 1.14?
 
- 
+**build**
+cd $(PATH_TO_YOUR_ROS2_WS)/src
+git clone https://github.com/zinuok/VINS-Fusion-ROS2
+cd ..
+colcon build --symlink-install && source ./install/setup.bash && source ./install/local_setup.bash
+
 
 cmake出错 可能是cmake 版本太低
 
