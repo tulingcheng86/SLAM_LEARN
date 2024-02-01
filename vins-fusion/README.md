@@ -197,13 +197,16 @@ rosrun vins kitti_odom_test ~/catkin_ws1/src/VINS-Fusion/config/kitti_odom/kitti
 
 https://github.com/zinuok/VINS-Fusion-ROS2
 
+
 **参考这个issue**
 https://github.com/zinuok/VINS-Fusion-ROS2/issues/8
 
 “@cvirxsc Try this one: https://github.com/bonabai/VINS-Fusion-ROS2.git, and checkout no_cuda branch.”
 
+
 **用这个作者的**
 https://github.com/bonabai/VINS-Fusion-ROS2
+
 
 **依赖**
 环境是ubuntu 22.04   roshumble
@@ -254,7 +257,7 @@ cp -r sitl_config/launch/* /home/tlc/PX4-Autopilot/launch
  
 
 ```
-Xtdrone VINS-fusion仿真
+## Xtdrone VINS-fusion仿真
 参考
 Ubuntu18.04 XTDrone 仿真环境配置 简记-接PX4速配 - 知乎 (zhihu.com)
  
