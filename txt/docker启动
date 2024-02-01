@@ -1,0 +1,259 @@
+
+
+#########################
+#########################
+tlc868686/18.04-ros-melodic-vinsfusion
+
+shangyeyuancainai/18.04-vins-fusion 
+
+xhost +
+docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix:rw --privileged --gpus all -e DISPLAY=:1 -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=all -e PYTHONUNBUFFERED=1 -e QT_X11_NO_MITSHM=1 wdczz/xtdrone:2.3 /bin/bash
+
+docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix:rw --privileged --gpus all -e DISPLAY=:1 -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=all -e PYTHONUNBUFFERED=1 -e QT_X11_NO_MITSHM=1 shangyeyuancainai/18.04-vins-fusion:v1 /bin/bash
+
+docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix:rw --privileged --gpus all -e DISPLAY=:1 -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=all -e PYTHONUNBUFFERED=1 -e QT_X11_NO_MITSHM=1 kalibr:latest /bin/bash
+
+docker pull shangyeyuancainai/18.04-vins-fusion:latest
+
+docker exec -it e04 /bin/bash
+docker exec -it e0a2edd38c88 /bin/bash
+
+sudo docker system prune -a -f  ####全清没运行的
+
+docker exec -it eb8 /bin/bash
+
+https://github.com/cucker0/docker/blob/main/md/%E5%B0%86docker%E6%9C%AC%E5%9C%B0%E9%95%9C%E5%83%8F%E6%8E%A8%E9%80%81%E5%88%B0hub.docker.com.md
+
+############有用
+source ~/catkin_ws/devel/setup.bash  #每个终端运行前都要加上这一句
+ 
+roslaunch vins vins_rviz.launch
+    rosrun vins vins_node ~/catkin_ws/src/VINS-Fusion/config/euroc/euroc_mono_imu_config.yaml 
+    (optional) rosrun loop_fusion loop_fusion_node ~/catkin_ws/src/VINS-Fusion/config/euroc/euroc_mono_imu_config.yaml 
+    rosbag play ~/catkin_ws1/Dates/MH_01_easy.bag
+
+########################
+########################cd 
+roslaunch px4 indoor1.launch
+
+cd ~/catkin_ws
+bash scripts/xtdrone_run_vio.sh
+
+cd ~/XTDrone/sensing/slam/vio
+python vins_transfer.py iris 0
+
+cd ~/XTDrone/communication
+python multirotor_communication.py iris 0 
+
+cd ~/XTDrone/control/keyboard
+python multirotor_keyboard_control.py iris 1 vel
+
+###############
+
+cd ~/XTDrone/motion_planning/3d
+python ego_transfer.py iris 0
+
+cd ~/XTDrone/motion_planning/3d
+rviz -d ego_rviz.rviz
+
+roslaunch ego_planner single_uav.launch 
+
+
+#####################
+#####################
+<launch>
+  <!-- size of map, change the size inflate x, y, z according to your application -->
+  <arg name="map_size_x"/>
+  <arg name="map_size_y"/>
+  <arg name="map_size_z"/>
+  <arg name="target_x"/>
+  <arg name="target_y"/>
+  <arg name="target_z"/>
+
+  <arg name="drone_id"/>
+
+  <!-- topic of your odometry such as VIO or LIO -->
+  <arg name="odom_topic"/>
+
+  <!-- number of moving objects -->
+  <arg name="obj_num" value="1" />
+
+  <!-- main algorithm params -->
+  <include file="$(find ego_planner)/launch/advanced_param_xtdrone.xml">
+
+    <arg name="drone_id" value="$(arg drone_id)"/>
+
+    <arg name="map_size_x_" value="$(arg map_size_x)"/>
+    <arg name="map_size_y_" value="$(arg map_size_y)"/>
+    <arg name="map_size_z_" value="$(arg map_size_z)"/>
+    <arg name="odometry_topic" value="$(arg odom_topic)"/>
+
+    <arg name="obj_num_set" value="$(arg obj_num)" />
+
+    <!-- camera pose: transform of camera frame in the world frame -->
+    <!-- depth topic: depth image, 640x480 by default -->
+    <!-- don't set cloud_topic if you already set these ones! -->
+    <arg name="camera_pose_topic" value="camera_pose"/>
+    <arg name="depth_topic" value="realsense/depth_camera/depth/image_raw"/>
+
+    <!-- topic of point cloud measurement, such as from LIDAR  -->
+    <!-- don't set camera pose and depth, if you already set this one! -->
+    <arg name="cloud_topic" value="pcl_render_node/points"/>
+
+    <!-- intrinsic params of the depth camera -->
+    <arg name="cx" value="320.5"/>
+    <arg name="cy" value="240.5"/>
+    <arg name="fx" value="554.254691191187"/>
+    <arg name="fy" value="554.254691191187"/>
+
+    <!-- maximum velocity and acceleration the drone will reach -->
+    <arg name="max_vel" value="1" />
+    <arg name="max_acc" value="2" />
+
+    <!--always set to 1.5 times grater than sensing horizen-->
+    <arg name="planning_horizon" value="7.5" /> 
+
+    <arg name="use_distinctive_trajs" value="true" />
+
+    <!-- 1: use 2D Nav Goal to select goal  -->
+    <!-- 2: use global waypoints below  -->
+    <arg name="flight_type" value="2" />
+
+    <!-- global waypoints -->
+    <!-- It generates a piecewise min-snap traj passing all waypoints -->
+    <arg name="point_num" value="4" />
+
+     <arg name="point0_x" value="$(arg target_x)" />  
+     <arg name="point0_y" value="$(arg target_y)" />  
+     <arg name="point0_z" value="$(arg target_z)" />  
+
+    <arg name="point1_x" value="0.8" />
+    <arg name="point1_y" value="-12.0" />
+    <arg name="point1_z" value="2.0" />
+    
+    <arg name="point2_x" value="0" />
+    <arg name="point2_y" value="0" />
+    <arg name="point2_z" value="2.0" />
+
+    <arg name="point3_x" value="0" />
+    <arg name="point3_y" value="0" />
+    <arg name="point3_z" value="1.0" />
+
+    <arg name="point4_x" value="0" />
+    <arg name="point4_y" value="0" />
+    <arg name="point4_z" value="0" />
+
+    
+  </include>
+
+  <!-- trajectory server -->
+  <node pkg="ego_planner" name="iris_$(arg drone_id)_traj_server" type="traj_server" output="screen">
+    <remap from="position_cmd" to="/xtdrone/iris_$(arg drone_id)/planning/pos_cmd"/>
+    <remap from="pose_cmd" to="/xtdrone/iris_$(arg drone_id)/cmd_pose_enu"/>
+    <remap from="~planning/bspline" to="/xtdrone/iris_$(arg drone_id)/planning/bspline"/>
+
+    <param name="traj_server/time_forward" value="1.0" type="double"/>
+  </node>
+  
+</launch>
+
+###################
+
+#################
+
+####################
+
+<launch>
+  <arg name="map_size_x" value="100"/>
+  <arg name="map_size_y" value="100"/>
+  <arg name="map_size_z" value="5"/>
+
+  <arg name="odom_topic" value="vins_estimator/odometry" />
+
+  <node pkg="tf" type="static_transform_publisher" name="iris_0_map_to_world"
+    args="0.0 0.0 0 0.0 0.0 0.0 /map /world 40" />
+  <node pkg="tf" type="static_transform_publisher" name="iris_0_world_to_ground_plane"
+    args="0.0 0.0 0 0.0 0.0 0.0 /world /ground_plane 40" />
+
+  <include file="$(find ego_planner)/launch/run_in_xtdrone.launch">
+  <arg name="drone_id" value="0"/>
+
+  <arg name="target_x" value="0.8"/>
+  <arg name="target_y" value="-7.8"/>
+  <arg name="target_z" value="2.0"/>
+
+  <arg name="map_size_x" value="$(arg map_size_x)"/>
+  <arg name="map_size_y" value="$(arg map_size_y)"/>
+  <arg name="map_size_z" value="$(arg map_size_z)"/>
+  <arg name="odom_topic" value="$(arg odom_topic)"/>
+  </include>
+</launch>
+
+####################
+    <param name="fsm/waypoint0_1_x" value="$(arg point0_1_x)" type="double"/>
+    <param name="fsm/waypoint0_1_y" value="$(arg point0_1_y)" type="double"/>
+    <param name="fsm/waypoint0_1_z" value="$(arg point0_1_z)" type="double"/>
+    <param name="fsm/waypoint0_2_x" value="$(arg point0_2_x)" type="double"/>
+    <param name="fsm/waypoint0_2_y" value="$(arg point0_2_y)" type="double"/>
+    <param name="fsm/waypoint0_2_z" value="$(arg point0_2_z)" type="double"/>
+    
+    
+    
+  <arg name="point0_1_x" />
+  <arg name="point0_1_y" />
+  <arg name="point0_1_z" />
+  <arg name="point0_2_x" />
+  <arg name="point0_2_y" />
+  <arg name="point0_2_z" />
+
+##########
+    <arg name="point1_x" value="0.8" />
+    <arg name="point1_y" value="-12.0" />
+    <arg name="point1_z" value="2.0" />
+    
+    <arg name="point2_x" value="0" />
+    <arg name="point2_y" value="0" />
+    <arg name="point2_z" value="2.0" />
+
+    <arg name="point3_x" value="0" />
+    <arg name="point3_y" value="0" />
+    <arg name="point3_z" value="1.0" />
+
+    <arg name="point4_x" value="0" />
+    <arg name="point4_y" value="0" />
+    <arg name="point4_z" value="0" />
+    
+    
+    
+    <arg name="point0_1_x" value="0.3" />
+    <arg name="point0_1_y" value="-7.8" />
+    <arg name="point0_1_z" value="3.0" />
+
+    <arg name="point0_2_x" value="0.3" />
+    <arg name="point0_2_y" value="-7.8" />
+    <arg name="point0_2_z" value="3.0" />
+
+    <arg name="point0_3_x" value="0.7" />
+    <arg name="point0_3_y" value="-7.8" />
+    <arg name="point0_3_z" value="3.0" />
+
+    <arg name="point0_4_x" value="1.0" />
+    <arg name="point0_4_y" value="-8.5" />
+    <arg name="point0_4_z" value="3.0" />
+    
+    
+    
+        <param name="fsm/waypoint0_1_x" value="$(arg point0_1_x)" type="double"/>
+    <param name="fsm/waypoint0_1_y" value="$(arg point0_1_y)" type="double"/>
+    <param name="fsm/waypoint0_1_z" value="$(arg point0_1_z)" type="double"/>
+    <param name="fsm/waypoint0_2_x" value="$(arg point0_2_x)" type="double"/>
+    <param name="fsm/waypoint0_2_y" value="$(arg point0_2_y)" type="double"/>
+    <param name="fsm/waypoint0_2_z" value="$(arg point0_2_z)" type="double"/>
+    <param name="fsm/waypoint0_3_x" value="$(arg point0_3_x)" type="double"/>
+    <param name="fsm/waypoint0_3_y" value="$(arg point0_3_y)" type="double"/>
+    <param name="fsm/waypoint0_3_z" value="$(arg point0_3_z)" type="double"/>
+    <param name="fsm/waypoint0_4_x" value="$(arg point0_4_x)" type="double"/>
+    <param name="fsm/waypoint0_4_y" value="$(arg point0_4_y)" type="double"/>
+    <param name="fsm/waypoint0_4_z" value="$(arg point0_4_z)" type="double"/>
+    
+

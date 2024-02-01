@@ -1,0 +1,158 @@
+
+MAVROS（MAVLink to ROS）是一个ROS（Robot Operating System）节点，用于在ROS系统中与PX4飞控系统进行通信。
+它通过将MAVLink消息转换为ROS消息，实现了ROS系统与无人机之间的数据交换和控制。
+
+在PX4 SITL（Software-in-the-Loop）仿真环境中，无人机模型通过PX4飞控软件进行仿真。
+通过在仿真环境中运行PX4 SITL，可以在计算机上模拟无人机的飞行和姿态控制。
+
+
+在这个launch文件中，MAVROS节点和PX4 SITL仿真环境中的无人机扮演着以下角色：
+1、MAVROS节点：负责接收来自无人机的传感器数据（如GPS、IMU等）和状态信息，并将其转换为ROS消息。同时，它也负责接收来自ROS系统的控制指令，并将其转发给无人机。
+2、PX4 SITL仿真环境中的无人机：由PX4飞控软件仿真的无人机模型。它接收来自MAVROS节点的控制指令，并根据指令模拟无人机的飞行和姿态控制。同时，它还将传感器数据和状态信息发送给MAVROS节点，以便在ROS系统中进行处理和显示。
+
+
+"/xtdrone/iris_0/cmd" 这个话题是用来向 ROS 中连接的无人机发送控制指令的。在 ROS 中，所有的通信都是通过发布者（publisher）和订阅者（subscriber）之间的消息传递来完成的。
+
+一个发布者节点会将无人机的控制指令发布到 "/xtdrone/iris_0/cmd" 这个话题上，并且无人机上运行的订阅者节点将监听该话题以接收并执行这些指令。这通常涉及到无人机的移动、悬停、转向等操作，具体取决于发布到该话题上的指令。
+
+键盘控制
+该节点通过接收键盘输入来控制飞行器的前进、后退、左移、右移、上升、下降以及旋转等动作
+按下"w"键会增加飞行器的前进速度，按下"x"键会减小飞行器的前进速度。其他按键也有类似的功能。
+
+
+查看该话题   无人机的姿态（速度和角度）
+rostopic echo /xtdrone/iris_cmd_vel_flu 
+
+ego_planner
+ego_planner需要输入深度图+相机位姿或是点云，这里以深度图+相机位姿的组合为例进行仿真
+相机位姿由VINS-Fusion计算得到。
+
+这是一些ROS话题，用于机器人的控制和状态估计。具体说明如下：
+
+/xtdrone/iris_0/planning/bspline：该话题用于发布来自路径规划器的B样条曲线路径信息，用于控制机器人的运动。
+
+/xtdrone/iris_0/planning/data_display：该话题用于在RViz中显示机器人的路径规划器数据信息，以便进行调试和验证。
+
+/xtdrone/iris_0/planning/pos_cmd：该话题用于发布机器人的位置控制指令，通过订阅该话题，机器人可以按照指定的位置移动到目标点。
+
+/xtdrone/iris_0/vins_estimator/odometry：该话题用于发布机器人的运动状态信息，包括机器人的位置、速度和姿态等数据，通过订阅该话题，用户可以获取机器人的实时状态信息。
+
+/xtdrone/iris_0/cmd
+/xtdrone/iris_0/cmd_accel_enu
+/xtdrone/iris_0/cmd_accel_flu
+/xtdrone/iris_0/cmd_pose_enu
+/xtdrone/iris_0/cmd_pose_flu
+/xtdrone/iris_0/cmd_vel_enu
+/xtdrone/iris_0/cmd_vel_flu
+/xtdrone/iris_0/planning/bspline
+/xtdrone/iris_0/planning/data_display
+/xtdrone/iris_0/planning/pos_cmd
+/xtdrone/iris_0/vins_estimator/odometry
+/xtdrone/leader/cmd
+/xtdrone/leader/cmd_vel_flu
+
+
+
+
+#######################
+#######################
+
+
+键盘控制节点通过/xtdrone/iris_0/cmd_vel_flu话题发送消息给iris_0_communication 节点控制无人机飞行
+我在通过键盘控制无人机飞行并查看/xtdrone/iris_0/cmd_vel_flu话题消息时rostopic  echo /xtdrone/iris_0/cmd_vel_flu后显示
+---
+linear: 
+  x: 0.0
+  y: 0.0
+  z: 0.0
+angular: 
+  x: 0.0
+  y: 0.0
+  z: 0.33
+---
+linear: 
+  x: 0.0
+  y: 0.0
+  z: 0.0
+angular: 
+  x: 0.0
+  y: 0.0
+  z: 0.33
+---
+linear: 
+  x: 0.0
+  y: 0.0
+  z: 0.0
+angular: 
+  x: 0.0
+  y: 0.0
+  z: 0.33
+---
+
+我现在不想通过手动按键盘控制飞机。而是给飞机指令（比如说旋转90度）控制它的姿态，应该怎么做呢？
+
+回答：
+
+rostopic pub /xtdrone/iris_0/cmd_vel_flu geometry_msgs/Twist "linear:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.33"
+
+
+ego_planner 可以读取几个全局目标点然后规划路径，目的是无人机每到达一个目标点后旋转九十度，然后执行完所有目标点后回家（家里坐标（0，0，0））
+
+思路：将ego_planner一条轨迹拆成多个轨迹，编写脚本分段执行任务
+
+旋转：
+通过查看键盘控制无人机的话题消息
+可知
+
+root@d10fba288ba3:/# rostopic info /xtdrone/iris_0/cmd_vel_flu
+Type: geometry_msgs/Twist
+
+Publishers: 
+ * /iris_multirotor_keyboard_control (http://d10fba288ba3:35643/)
+
+Subscribers: 
+ * /iris_0_communication (http://d10fba288ba3:38861/)
+
+
+因此
+/xtdrone/iris_0/cmd_vel_flu 话题使用的消息类型是 geometry_msgs/Twist。
+
+在终端中执行以下命令，将指定的消息内容发布到该话题：
+
+rostopic pub /xtdrone/iris_0/cmd_vel_flu geometry_msgs/Twist "linear:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.33"
+
+但是该消息内容只会执行一次，所以要编写个py脚本循环发布旋转消息
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

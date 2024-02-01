@@ -1,0 +1,148 @@
+docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix:rw --privileged --gpus all -e DISPLAY=:1 -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=all -e PYTHONUNBUFFERED=1 -e QT_X11_NO_MITSHM=1 vins /bin/bash
+
+
+我想建立一个docker镜像
+Dockerfile的命令应该怎么写
+
+以下是我要执行的步骤
+1.拉取jianchong/vins-fusion docker镜像
+然后在拉取的镜像里面执行下面的指令 
+mkdir -p catkin_ws1/src
+2.安装VIM
+sudo apt-get update
+sudo apt-get install vim
+
+3.安装依赖
+sudo apt install ninja-build exiftool ninja-build protobuf-compiler libeigen3-dev genromfs xmlstarlet libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev python-pip python3-pip gawk
+ 
+4.更新插件
+python -m pip install --upgrade setupTools
+python -m pip install --upgrade pip
+ 
+ 
+pip2 install pandas jinja2 pyserial cerberus pyulog==0.7.0 numpy toml pyquaternion empy pyyaml
+pip3 install packaging numpy empy toml pyyaml jinja2 pyargparse
+
+5.ROS安装，使用fishROS一键安装。
+wget http://fishros.com/install -O fishros && . fishros 
+./run.sh ~/catkin_ws/src/VINS-Fusion/config/euroc/euroc_mono_imu_config.yaml
+安装ros melodic desktop版本和rosdepc
+
+6.Gazebo安装
+sudo apt-get remove gazebo*
+sudo apt-get remove libgazebo*
+sudo apt-get remove ros-melodic-gazebo* 
+
+sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
+
+wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+
+sudo apt-get update
+# 下面两步重新装上gazebo9
+sudo apt-get install gazebo9
+sudo apt-get install libgazebo9-dev
+# 重装Gazebo9后需要更新依赖
+sudo apt upgrade
+
+安装依赖
+sudo apt-get install ros-melodic-moveit-msgs ros-melodic-object-recognition-msgs ros-melodic-octomap-msgs ros-melodic-camera-info-manager  ros-melodic-control-toolbox ros-melodic-polled-camera ros-melodic-controller-manager ros-melodic-transmission-interface ros-melodic-joint-limits-interface
+
+7.下载XTDrone源码
+
+git clone https://gitee.com/robin_shaun/XTDrone.git
+cd XTDrone
+git submodule update --init --recursive
+
+
+cd ~/catkin_ws1
+cp -r ~/XTDrone/sitl_config/gazebo_ros_pkgs src/
+catkin build
+
+source ~/catkin_ws1/devel/setup.bash
+
+8.下载Gazebo模型放在~/.gazebo中
+
+cd ~/.gazebo
+git clone https://github.com/osrf/gazebo_models.git
+mv gazebo_models models
+
+9.安装MAVROS
+sudo apt install ros-melodic-mavros ros-melodic-mavros-extras
+wget https://gitee.com/robin_shaun/XTDrone/raw/master/sitl_config/mavros/install_geographiclib_datasets.sh
+sudo chmod a+x ./install_geographiclib_datasets.sh
+sudo ./install_geographiclib_datasets.sh
+
+
+10.PX4配置
+
+git clone https://github.com/PX4/PX4-Autopilot.git
+mv PX4-Autopilot PX4_Firmware
+cd PX4_Firmware
+git checkout -b xtdrone/dev v1.11.0-beta1
+git submodule update --init --recursive
+make px4_sitl_default gazebo 
+
+vim ~/.bashrc
+添加
+source ~/catkin_ws/devel/setup.bash
+source ~/PX4_Firmware/Tools/setup_gazebo.bash ~/PX4_Firmware/ ~/PX4_Firmware/build/px4_sitl_default
+export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/PX4_Firmware
+export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/PX4_Firmware/Tools/sitl_gazebo
+
+退出 编辑
+source ~/.bashrc
+
+11.
+
+cd XTDrone
+git submodule update --init --recursive
+cp sensing/gimbal/gazebo_gimbal_controller_plugin.cpp ~/PX4_Firmware/Tools/sitl_gazebo/src/ 
+cp sitl_config/init.d-posix/rcS ~/PX4_Firmware/ROMFS/px4fmu_common/init.d-posix/
+cp sitl_config/worlds/* ~/PX4_Firmware/Tools/sitl_gazebo/worlds/
+cp -r sitl_config/models/* ~/PX4_Firmware/Tools/sitl_gazebo/models/
+cp -r sitl_config/launch/* ~/PX4_Firmware/launch/
+cd ~/.gazebo/models/
+rm -r stereo_camera/ 3d_lidar/ 3d_gpu_lidar/ hokuyo_lidar/ 
+
+pip3 uninatall empy
+pip3 install empy==3.3.2
+
+cd ~/PX4_Firmware
+make px4_sitl_default gazebo
+
+
+#######################
+#######################
+#######################
+学习DOCKER 
+https://docs.docker.com/get-started/02_our_app/
+
+###########################
+#############################
+要清理/var/cache/apt/archives/目录下的过期和不必要的软件包，可以使用以下命令：
+
+    打开终端（Terminal）。
+    运行以下命令以查看/var/cache/apt/archives/目录下的软件包数量：
+
+ls -l /var/cache/apt/archives/ | wc -l
+
+这个命令将返回软件包的数量。
+运行以下命令以清理/var/cache/apt/archives/目录下的过期软件包：
+
+sudo apt autoclean
+
+这个命令将删除已经安装的软件包的旧版本，但保留当前正在使用的版本。
+运行以下命令以清理/var/cache/apt/archives/目录下的所有软件包：
+
+sudo apt clean
+
+这个命令将删除/var/cache/apt/archives/目录中的所有软件包。
+最后，再次运行以下命令以确保/var/cache/apt/archives/目录下的软件包已被清理：
+
+    ls -l /var/cache/apt/archives/ | wc -l
+
+    如果返回的数量为0，说明清理成功。
+
+如果清理/var/cache/apt/archives/目录后仍然没有足够的空间
+####################
+####################

@@ -1,0 +1,151 @@
+Ubuntu22.04 使用docker运行vins-fusion
+
+1\安装Docker
+
+https://linux.cn/article-14871-1.html
+
+2\拉取vins-fusion的image
+docker pull jianchong/vins-fusion
+
+3\运行vins-fusion
+xhost +
+docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix:rw --privileged --gpus all -e DISPLAY=:1 -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=all -e PYTHONUNBUFFERED=1 -e QT_X11_NO_MITSHM=1 jianchong/vins-fusion /bin/bash
+
+3\1
+cd ~/catkin_ws
+source ~/catkin_ws/devel/setup.bash
+roslaunch vins vins_rviz.launch
+
+3\2
+docker ps
+docker exec -it 你的container_ID /bin/bash
+source ~/catkin_ws/devel/setup.bash
+rosrun vins vins_node ~/catkin_ws/src/VINS-Fusion/config/euroc/euroc_mono_imu_config.yaml //Monocular + IMU
+
+rosrun vins vins_node ~/catkin_ws/src/VINS-Fusion/config/euroc/euroc_stereo_imu_config.yaml  //Stereo + IMU
+
+rosrun vins vins_node ~/catkin_ws/src/VINS-Fusion/config/euroc/euroc_stereo_config.yaml  //Stereo only
+
+3\3
+docker exec -it 你的container_ID /bin/bash
+source ~/catkin_ws/devel/setup.bash
+rosbag play ~/catkin_ws/data/MH_01_easy.bag
+
+
+docker 里的ubuntu环境为 
+root@07b0a23a38ec:/# cat /etc/issue
+Ubuntu 18.04.5 LTS \n \l
+
+sudo apt install ninja-build exiftool ninja-build protobuf-compiler libeigen3-dev genromfs xmlstarlet libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev python-pip python3-pip gawk
+pip2 install pandas jinja2 pyserial cerberus pyulog==0.7.0 numpy toml pyquaternion empy pyyaml 
+pip3 install packaging numpy empy toml pyyaml jinja2 pyargparse
+
+
+
+------------------------------------------------
+
+以下是无关的
+
+sudo apt-get install ros-melodic-moveit-msgs ros-melodic-object-recognition-msgs ros-melodic-octomap-msgs ros-melodic-camera-info-manager  ros-melodic-control-toolbox ros-melodic-polled-camera ros-melodic-controller-manager ros-melodic-transmission-interface ros-melodic-joint-limits-interface
+
+DOCKER名称
+docker exec -it f35 /bin/bash
+
+先安装VIM
+sudo apt-get update
+sudo apt-get install vim
+
+添加依赖
+sudo apt install ninja-build exiftool ninja-build protobuf-compiler libeigen3-dev genromfs xmlstarlet libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev python-pip python3-pip gawk
+
+更新插件
+python -m pip install --upgrade setupTools
+python -m pip install --upgrade pip
+
+pip2 install pandas jinja2 pyserial cerberus pyulog==0.7.0 numpy toml pyquaternion empy pyyaml 
+pip3 install packaging numpy empy toml pyyaml jinja2 pyargparse
+
+ROS安装
+wget http://fishros.com/install -O fishros && . fishros 
+
+
+sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
+wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+sudo apt-get update
+# 下面两步重新装上gazebo9
+sudo apt-get install gazebo9
+sudo apt-get install libgazebo9-dev
+# 重装Gazebo9后需要更新依赖
+sudo apt upgrade
+
+sudo apt-get install ros-melodic-moveit-msgs ros-melodic-object-recognition-msgs ros-melodic-octomap-msgs ros-melodic-camera-info-manager  ros-melodic-control-toolbox ros-melodic-polled-camera ros-melodic-controller-manager ros-melodic-transmission-interface ros-melodic-joint-limits-interface
+
+
+PX4配置
+git clone https://github.com/PX4/PX4-Autopilot.git
+mv PX4-Autopilot PX4_Firmware #重命名
+cd PX4_Firmware
+git checkout -b xtdrone/dev v1.11.0-beta1 #切分支1.11.0-beta1，命名分支为xtdrone/dev
+git submodule update --init --recursive
+
+pip3 uninatall empy
+pip3 install empy==3.3.2
+
+make px4_sitl_default gazebo 
+
+source ~/catkin_ws1/devel/setup.bash
+source ~/PX4_Firmware/Tools/setup_gazebo.bash ~/PX4_Firmware/ ~/PX4_Firmware/build/px4_sitl_default
+export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/PX4_Firmware
+export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/PX4_Firmware/Tools/sitl_gazebo
+
+source ~/.bashrc
+
+
+XTDrone源码下载及测试
+git clone https://gitee.com/robin_shaun/XTDrone.git
+cd XTDrone
+git submodule update --init --recursive
+cp sensing/gimbal/gazebo_gimbal_controller_plugin.cpp ~/PX4_Firmware/Tools/sitl_gazebo/src/ #修改PX4 sitl_gazebo中的插件
+cp sitl_config/init.d-posix/rcS ~/PX4_Firmware/ROMFS/px4fmu_common/init.d-posix/
+cp sitl_config/worlds/* ~/PX4_Firmware/Tools/sitl_gazebo/worlds/
+cp -r sitl_config/models/* ~/PX4_Firmware/Tools/sitl_gazebo/models/
+cp -r sitl_config/launch/* ~/PX4_Firmware/launch/
+cd ~/.gazebo/models/
+rm -r stereo_camera/ 3d_lidar/ 3d_gpu_lidar/ hokuyo_lidar/ #删除同名模型
+
+EKF 配置
+vim  ~/PX4_Firmware/ROMFS/px4fmu_common/init.d-posix/rcS
+rm ~/.ros/eeprom/parameters*
+rm -rf ~/.ros/sitl*
+
+
+cp -r ~/XTDrone/sensing/slam/vio/VINS-Fusion ~/catkin_ws1/src/
+mkdir ~/catkin_ws1/scripts/
+cp ~/XTDrone/sensing/slam/vio/xtdrone_run_vio.sh ~/catkin_ws1/scripts/
+cd ~/catkin_ws1
+catkin_make #或catkin build，取决于您的编译工具
+
+
+
+
+运行
+roslaunch px4 indoor1.launch
+
+cd ~/catkin_ws1
+bash scripts/xtdrone_run_vio.sh
+
+cd ~/XTDrone/sensing/slam/vio
+python vins_transfer.py iris 0
+
+cd ~/XTDrone/communication
+python multirotor_communication.py iris 0 
+
+cd ~/XTDrone/control/keyboard
+python multirotor_keyboard_control.py iris 1 vel
+
+
+vim ~/catkin_ws1/src/VINS-Fusion/config/xtdrone_sitl/px4_sitl_stereo_imu_config.yaml
+
+
+
+
