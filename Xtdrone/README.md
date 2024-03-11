@@ -1,5 +1,3 @@
-
-
 # 基于xtdrone的仿真无人机学习：定点飞行 （用ego_planner
 
   参考[三维运动规划 · 语雀](https://www.yuque.com/xtdrone/manual_cn/3d_motion_planning)
@@ -13,7 +11,6 @@ MAVROS（MAVLink to ROS）是一个ROS（Robot Operating System）节点，用�
 
 在PX4 SITL（Software-in-the-Loop）仿真环境中，无人机模型通过PX4飞控软件进行仿真。
  通过在仿真环境中运行PX4 SITL，可以在计算机上模拟无人机的飞行和姿态控制。
-
 
  在这个launch文件中，MAVROS节点和PX4 SITL仿真环境中的无人机扮演着以下角色：
  1、MAVROS节点：负责接收来自无人机的传感器数据（如GPS、IMU等）和状态信息，并将其转换为ROS消息。同时，它也负责接收来自ROS系统的控制指令，并将其转发给无人机。
@@ -89,7 +86,7 @@ roslaunch px4 indoor1.launch
 ![点击并拖拽以移动](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
 
 
- 
+
  Gazebo启动后，在另一个终端运行（启动通信脚本，iris代表子机型，0代表飞机的编号，与0号iris建立通信）
 
 ```
@@ -100,7 +97,7 @@ python multirotor_communication.py iris 0
 ![点击并拖拽以移动](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
 
 
- 
+
  与0号iris建立通信后，在另一个终端运行（启动键盘控制脚本，iris代表机型，1代表飞机的个数，vel代表速度控制）
 
 ```
@@ -137,7 +134,7 @@ python multirotor_keyboard_control.py iris 1 vel
 >   z: 0.33"
 
 **但是该消息内容只会执行一次，所以要编写个py脚本循环发布旋转消息**
- 
+
 
 xuanzhuan.py
 
