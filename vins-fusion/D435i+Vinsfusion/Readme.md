@@ -206,6 +206,7 @@ git clone https://github.com/OctoMap/octomap_mapping.git
 ```bash
 cd ../
 rosdep install octomap_mapping
+sudo apt-get install ros-melodic-octomap-ros
 catkin build
 ```
 
@@ -243,8 +244,7 @@ cd ~/catkin_ws && catkin_make
 	<node pkg="point_cloud_converter" name="point_cloud_converter" type="point_cloud_converter_node" >
 		<remap from="points_in" to="/vins_estimator/point_cloud"/>
 		<remap from="points2_out" to="/points" />
-	</node>
-	
+	</node>	
  
 	<node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
 		<param name="resolution" value="0.05" />
