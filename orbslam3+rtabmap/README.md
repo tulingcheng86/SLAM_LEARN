@@ -231,19 +231,7 @@ ros2 run rtabmap_odom rgbd_odometry --version
 
  
 
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
+  
 
  
 
