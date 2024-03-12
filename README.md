@@ -1,14 +1,43 @@
-**1、slambook14讲--高翔**https://github.com/tulingcheng86/SLAM_LEARN/tree/main/Book
+# **1、slambook14讲--高翔**
 
-**2、vins-fusion**https://github.com/tulingcheng86/SLAM_LEARN/tree/main/vins-fusion
+https://github.com/tulingcheng86/SLAM_LEARN/tree/main/Book
 
-**3、xtdrone**https://github.com/tulingcheng86/SLAM_LEARN/tree/main/Xtdrone
+# **2、vins-fusion**
 
-**4、orb-slam3+rtabmap**   https://github.com/tulingcheng86/SLAM_LEARN/tree/main/orbslam3%2Brtabmap
+https://github.com/tulingcheng86/SLAM_LEARN/tree/main/vins-fusion
 
+# **3、xtdrone**
 
-**5、双目相机+imu标定** https://github.com/tulingcheng86/SLAM_LEARN/blob/main/%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%2Bimu%E6%A0%87%E5%AE%9A/%E6%A0%87%E5%AE%9A%E6%AD%A5%E9%AA%A4.md
+https://github.com/tulingcheng86/SLAM_LEARN/tree/main/Xtdrone
 
-**6、SSH-learn** https://github.com/tulingcheng86/SLAM_LEARN/tree/main/ssh
+# **4、orb-slam3+rtabmap**   
 
-**7.d435i-vinsfusion**https://github.com/tulingcheng86/SLAM_LEARN/blob/main/vins-fusion/D435i%2BVinsfusion/Readme.md
+https://github.com/tulingcheng86/SLAM_LEARN/tree/main/orbslam3%2Brtabmap
+
+# **5、双目相机+imu标定** 
+
+https://github.com/tulingcheng86/SLAM_LEARN/blob/main/%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%2Bimu%E6%A0%87%E5%AE%9A/%E6%A0%87%E5%AE%9A%E6%AD%A5%E9%AA%A4.md
+
+# **6、SSH-learn** 
+
+https://github.com/tulingcheng86/SLAM_LEARN/tree/main/ssh
+
+# **7.d435i-vinsfusion**
+
+https://github.com/tulingcheng86/SLAM_LEARN/blob/main/vins-fusion/D435i%2BVinsfusion/Readme.md
+
+# **8.rosbag互转**
+
+## 安装 rosbags
+
+pip install rosbags
+
+## ROS1 bag 转 ROS2 bag
+
+rosbags-convert foo.bag
+
+## ROS2 bag转 ROS1 bag
+
+rosbags-convert bar
+
+https://ternaris.gitlab.io/rosbags/
