@@ -288,7 +288,7 @@ roslaunch rtabmap_ros rtabmap.launch rtabmap_args:="--delete_db_on_start" depth_
 //NOVINS
 roslaunch rtabmap_examples euroc_datasets.launch MH_seq:=true
 
-rosbag play --clock MH_easy.bag
+rosbag play --clock MH_01_easy.bag
 //WITH-VINS
 roslaunch rtabmap_examples euroc_datasets.launch args:="--Odom/Strategy 9 OdomVINS/ConfigPath ~/catkin_ws/src/VINS-Fusion/config/euroc/euroc_stereo_imu_config.yaml" MH_seq:=true raw_images_for_odom:=true
 
@@ -354,3 +354,17 @@ rosbag play --clock MH_01_easy.bag
 ```
 
 ![image-20240312175012684](/home/sbim/.config/Typora/typora-user-images/image-20240312175012684.png)
+
+
+
+
+
+# evo
+
+```shell
+evo_traj tum MH_01-GT.tum -p plot_mode=xyz
+
+evo_traj tum MH_01-GT.tum -p
+
+```
+
