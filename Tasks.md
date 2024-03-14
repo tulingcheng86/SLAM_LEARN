@@ -40,7 +40,7 @@ ros2 topic info --verbose /camera/camera/imu
 
 export ROS_DOMAIN_ID=30
 
-# GPT4问问题 ip问题
+# ip问题 GPT4问问题 
 
 这个jetson nano连接了一个D435i相机，并且配置好了realsense固件和realsense-ros，通过roslaunch realsense2_camera rs_fusion_camera_stereo.launch 启动相机ros话题节点，可以查看到相机的各个话题信息。现在我要将 jetson nano发布的ros话题信息发送给同一局域网下的电脑，使得这台电脑能rostopic list查看到话题，也能订阅这个话题。有什么方法吗
 
@@ -115,7 +115,7 @@ roslaunch rtabmap_ros rtabmap.launch rtabmap_args:="--delete_db_on_start" depth_
 
 # 保存
 
-```
+```c++
 <launch>
   <arg name="serial_no"           default=""/>
   <arg name="usb_port_id"         default=""/>
@@ -357,12 +357,29 @@ rosbag play --clock MH_01_easy.bag
 
 
 
+## d435i 跑rtabmap
 
+```shell
+roslaunch rtabmap_examples test_d435i_vio.launch
+
+roslaunch rtabmap_examples test_d435i_vio.launch args:="--Odom/Strategy 9 OdomVINS/ConfigPath ~/catkin_ws/src/VINS-Fusion/config/realsense_d435i/realsense_stereo_imu_config.yaml"
+
+```
+
+```
+rosbag record -O my_bagfile_1.bag /camera/aligned_depth_to_color/camera_info  camera/aligned_depth_to_color/image_raw /camera/color/camera_info /camera/color/image_raw /camera/imu  /tf_static /camera/infra1/image_rect_raw /camera/infra2/image_rect_raw /camera/infra2/camera_info /camera/infra1/camera_info 
+```
+
+roslaunch realsense2_camera opensourctracking.launch
+
+
+
+realsense_d435i/realsense_stereo_imu_config.yaml
 
 # evo
 
 ```shell
-evo_traj tum MH_01-GT.tum -p plot_mode=xyz
+ evo_traj tum MH_01-GT.tum -p plot_mode=xyz
 
 evo_traj tum MH_01-GT.tum -p
 
