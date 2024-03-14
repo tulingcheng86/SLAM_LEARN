@@ -370,7 +370,16 @@ roslaunch rtabmap_examples test_d435i_vio.launch args:="--Odom/Strategy 9 OdomVI
 rosbag record -O my_bagfile_1.bag /camera/aligned_depth_to_color/camera_info  camera/aligned_depth_to_color/image_raw /camera/color/camera_info /camera/color/image_raw /camera/imu  /tf_static /camera/infra1/image_rect_raw /camera/infra2/image_rect_raw /camera/infra2/camera_info /camera/infra1/camera_info 
 ```
 
+
+
+### 支线
+
+```shell
 roslaunch realsense2_camera opensourctracking.launch
+
+rosbag record -O my_bagfile_2.bag /camera/aligned_depth_to_color/camera_info  camera/aligned_depth_to_color/image_raw /camera/color/camera_info /camera/color/image_raw /camera/imu /camera/imu_info /tf_static
+
+```
 
 
 
@@ -385,3 +394,65 @@ evo_traj tum MH_01-GT.tum -p
 
 ```
 
+# 挑战杯
+
+### 幻灯片1：封面
+
+- 标题：千村万景：智能无人机VR的快速场景构建
+- 副标题：用技术赋能乡村振兴和教育现代化
+- 呈现者信息：姓名、日期、单位
+
+### 幻灯片2：项目背景
+
+- 国家乡村振兴战略的重要性
+- 当前乡村教育和旅游面临的挑战
+- 技术在推动乡村发展中的潜力
+- 元宇宙和虚拟现实技术的崛起
+
+### 幻灯片3：核心优势
+
+- **实时高效**：无人机快速收集地形、植被等数据，实现高效场景构建
+- **沉浸式体验**：VR技术提供真实感强的乡村旅游和教育体验
+- **可扩展性**：适用于不同规模和类型的乡村场景
+- **促进教育平等**：通过虚拟现实技术使远程乡村教育资源丰富化
+- **环境友好**：数字化探索减少对乡村环境的实际影响
+
+### 幻灯片4：基础调研
+
+- 乡村地区的现有条件和技术基础
+- 目标群体的技术接受度和需求分析
+- 相关技术的发展趋势和应用案例
+- 潜在的挑战和解决方案
+
+### 幻灯片5：执行方案
+
+- **阶段一：需求分析与项目规划**
+  - 定义目标乡村、用户群体和需求
+  - 明确项目目标和预期成果
+- **阶段二：技术开发与测试**
+  - 无人机的选择与定制
+  - VR场景的构建技术开发
+  - 系统集成与测试
+- **阶段三：实地部署与数据收集**
+  - 在选定乡村进行无人机飞行和数据收集
+  - 构建具体乡村的VR场景
+- **阶段四：平台优化与推广**
+  - 根据用户反馈优化体验
+  - 开展乡村教育和旅游推广活动
+
+### 幻灯片6：预期成果与影响
+
+- 提升乡村旅游吸引力和教育资源可及性
+- 促进乡村经济和社会的可持续发展
+- 增强公众对乡村文化的了解和尊重
+
+### 幻灯片7：结论与下一步计划
+
+- 总结项目的创新点和社会价值
+- 概述未来发展计划和期望合作
+
+### 幻灯片8：Q&A
+
+- 邀请听众提问和反馈
+
+这个PPT大纲提供了一个全面的视角来介绍你的项目，从背景到执行方案，再到预期成果，都有详细的说明。根据具体需要，你可以调整内容的深度和广度，确保信息的准确性和吸引力。
