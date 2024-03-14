@@ -367,7 +367,7 @@ roslaunch rtabmap_examples test_d435i_vio.launch args:="--Odom/Strategy 9 OdomVI
 ```
 
 ```
-rosbag record -O my_bagfile_1.bag /camera/aligned_depth_to_color/camera_info  camera/aligned_depth_to_color/image_raw /camera/color/camera_info /camera/color/image_raw /camera/imu  /tf_static /camera/infra1/image_rect_raw /camera/infra2/image_rect_raw /camera/infra2/camera_info /camera/infra1/camera_info 
+rosbag record -b 1024 -O my_bagfile_1.bag /camera/aligned_depth_to_color/camera_info  camera/aligned_depth_to_color/image_raw /camera/color/camera_info /camera/color/image_raw /camera/imu  /tf_static /camera/infra1/image_rect_raw /camera/infra2/image_rect_raw /camera/infra2/camera_info /camera/infra1/camera_info 
 ```
 
 
