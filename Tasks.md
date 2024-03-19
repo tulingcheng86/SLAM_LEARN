@@ -111,6 +111,39 @@ roslaunch rtabmap_ros rtabmap.launch rtabmap_args:="--delete_db_on_start --Optim
 roslaunch rtabmap_ros rtabmap.launch rtabmap_args:="--delete_db_on_start" depth_topic:=/camera/aligned_depth_to_color/image_raw rgb_topic:=/camera/color/image_raw camera_info_topic:=/camera/color/camera_info
 ```
 
+## 安装rtabmap
+
+https://blog.csdn.net/Starry_Sheep/article/details/124725504
+
+```
+sudo apt-get install ros-melodic-rtabmap ros-melodic-rtabmap-ros 
+
+sudo apt-get remove ros-melodic-rtabmap ros-melodic-rtabmap-ros
+```
+
+这个不需要安装在工作目录下
+
+```
+cd 
+git clone https://github.com/introlab/rtabmap.git rtabmap
+cd rtabmap/build
+cmake -DCMAKE_INSTALL_PREFIX=~/catkin_ws/devel ..
+make -j4
+make install
+```
+
+安装RTABMAP_ROS
+这个安装在工作目录下
+
+```
+mkdir rtabmap_ws
+cd rtabmap_ws
+git clone https://github.com/introlab/rtabmap_ros.git rtabmap_ros
+catkin build
+```
+
+
+
 
 
 # 保存
@@ -278,9 +311,8 @@ roslaunch rtabmap_ros rtabmap.launch rtabmap_args:="--delete_db_on_start" depth_
   </group>
 </launch>
 
+      
 ```
-
-
 
 # rtabmap 跑 euroc  noVINS/VINS
 
@@ -395,4 +427,43 @@ evo_traj tum MH_01-GT.tum -p
 ```
 
 
+
+# egoplanner
+
+照着教程安装就行
+
+https://github.com/ZJU-FAST-Lab/ego-planner
+
+报错
+
+## /usr/bin/ld: 找不到 -lpose_utils报错
+
+Errors     << odom_visualization:make /home/labh/xtdrone_ws/logs/odom_visualization/build.make.002.log
+/usr/bin/ld: 找不到 -lpose_utils
+collect2: error: ld returned 1 exit status
+make[2]: *** [/home/labh/xtdrone_ws/devel/.private/odom_visualization/lib/odom_visualization/odom_visualization] Error 1
+make[1]: *** [CMakeFiles/odom_visualization.dir/all] Error 2
+make: *** [all] Error 2
+
+解决方法：
+
+用locate命令定位XXX库文件
+
+```
+locate libpose_utils.so
+```
+
+得到结果为：
+
+```
+/home/labh/.local/share/Trash/files/Fast-Perching/devel/lib/libpose_utils.so
+/home/labh/.local/share/Trash/files/devel.2/.private/pose_utils/lib/libpose_utils.so
+/home/labh/.local/share/Trash/files/devel.2/lib/libpose_utils.so
+```
+
+再用软链接将上述中的任意一个与其链接起来
+
+```
+sudo ln -s /home/labh/.local/share/Trash/files/devel.2/lib/libpose_utils.so /usr/lib/libpose_utils.so
+```
 
