@@ -1,3 +1,5 @@
+
+
 # 1.【基于Ubuntu18.04+Melodic的realsense D435i安装】
 
 https://developer.aliyun.com/article/1303849#:~:text=%E5%9F%BA%E4%BA%8EUbuntu18.04%2BMelodic%E7%9A%84realsense,D435%E5%AE%89%E8%A3%85%EF%BC%8C%E9%A6%96%E5%85%88SDK%E5%AE%89%E8%A3%85%EF%BC%8C%E5%90%8E%E9%9D%A2%E7%BB%99%E5%87%BA%E4%B8%A4%E4%B8%AA%E5%AE%89%E8%A3%85realsense-ros%EF%BC%8C%E6%9C%9F%E5%BE%85%E4%BD%A0%E7%9A%84%E5%85%B3%E6%B3%A8%EF%BC%8C%E5%90%8E%E6%9C%9F%E6%88%91%E4%BC%9A%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0ROS%E4%B8%ADD435i%E7%9A%84%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8
@@ -213,7 +215,7 @@ catkin build
 **ROS 中提供了一个 Rviz 可视化 Octomap 的插件，如果没有安装使用下面的命令即可：**
 
 ```csharp
-sudo apt-get install ros-你的ROS版本-octomap-rviz-plugins
+sudo apt-get install ros-melodic-octomap-rviz-plugins
 ```
 
 其中的OccupancyGrid是显示三维概率地图，也就是octomap地图。OccupancyMap是显示二维占据栅格地图。
@@ -287,4 +289,174 @@ sudo apt-get install octovis
 
 ```cobol
 octovis 2022.bt
+      
 ```
+
+
+
+# 3.使用D435i运行Rtabmap
+
+参考：
+https://blog.csdn.net/Starry_Sheep/article/details/124725504
+
+https://blog.csdn.net/rosfreshman/article/details/116404077
+
+https://github.com/IntelRealSense/realsense-ros/wiki/SLAM-with-D435i#personalize-rviz
+
+
+
+## 3.1安装rtabmap
+
+```
+sudo apt-get install ros-melodic-rtabmap ros-melodic-rtabmap-ros 
+
+sudo apt-get remove ros-melodic-rtabmap ros-melodic-rtabmap-ros
+```
+
+**这个不需要安装在工作目录下**
+
+```
+cd 
+git clone https://github.com/introlab/rtabmap.git rtabmap
+cd rtabmap/build
+cmake -DCMAKE_INSTALL_PREFIX=~/catkin_ws/devel ..
+make -j4
+make install
+```
+
+**安装RTABMAP_ROS**
+**这个安装在工作目录下**
+
+```
+cd catkin_ws
+git clone https://github.com/introlab/rtabmap_ros.git rtabmap_ros
+catkin build
+```
+
+这样就安装好了没有链接vins的rtabmap
+
+
+
+## 3.2 测试安装成功没
+
+**rtabmap 跑 euroc**
+
+```
+//NOVINS
+roslaunch rtabmap_examples euroc_datasets.launch MH_seq:=true
+
+rosbag play --clock MH_01_easy.bag
+```
+
+```
+编译成功 跑数据集的时候 出现odometry: waiting imu to initialize orientation (wait_imu_to_init=true)
+在launch文件里面把参数imu_topic的值改成/imu0
+```
+
+## 3.3 链接 VINS
+
+**查看是否链接到VINS**
+
+```
+root@e088e9462c1a:~/catkin_ws# rosrun rtabmap_odom rgbd_odometry --version
+```
+
+![](/home/sbim/Videos/5.jpg)
+
+
+
+**教程**
+
+下载补丁
+
+https://gist.github.com/matlabbe/795ab37067367dca58bbadd8201d986c
+
+**下载第一个**[**vins-fusion_be55a93_pull136.patch**](https://gist.github.com/matlabbe/795ab37067367dca58bbadd8201d986c#file-vins-fusion_be55a93_pull136-patch)到VINS-FUSION文件夹中
+
+```
+git apply vins-fusion_be55a93_pull136.patch
+cd ~/catkin_ws
+catkin build
+```
+
+**然后到rtabmap下**
+
+```
+cd ~/rtabmap/build
+cmake -DCMAKE_INSTALL_PREFIX=~/catkin_ws/devel -DWITH_VINS=ON ..
+make -j4
+make install
+```
+
+**最后检查是否链接成功**
+
+```
+cd ~/catkin_ws
+catkin build
+source devel/setup.bash
+rosrun rtabmap_odom rgbd_odometry --version
+```
+
+**测试euroc数据集**
+
+```
+//WITH-VINS
+roslaunch rtabmap_examples euroc_datasets.launch args:="--Odom/Strategy 9 OdomVINS/ConfigPath ~/catkin_ws/src/VINS-Fusion/config/euroc/euroc_stereo_imu_config.yaml" MH_seq:=true raw_images_for_odom:=true
+
+rosbag play --clock MH_01_easy.bag
+```
+
+![image-20240312175012684](/home/sbim/.config/Typora/typora-user-images/image-20240312175012684.png)
+
+```
+//支线：https://github.com/IntelRealSense/realsense-ros/wiki/SLAM-with-D435i#personalize-rviz
+
+sudo apt-get install ros-kinetic-imu-filter-madgwick
+
+sudo apt-get install ros-kinetic-rtabmap-ros
+
+sudo apt-get install ros-kinetic-robot-localization
+
+roslaunch realsense2_camera opensource_tracking.launch
+```
+
+
+
+## 3.4 用D435I运行vin-rtabmap
+
+**要运行有画面，要将rs_fusion_camera_stereo.launch文件中的改成这个(不知道为什么640不行，还没解决)**
+
+```c++
+  <arg name="infra_width"         default="848"/>
+```
+
+**运行**
+
+```
+roslaunch rtabmap_examples test_d435i_vio.launch
+
+roslaunch rtabmap_examples test_d435i_vio.launch args:="--Odom/Strategy 9 OdomVINS/ConfigPath ~/catkin_ws/src/VINS-Fusion/config/realsense_d435i/realsense_stereo_imu_config.yaml"
+```
+
+**而且运行也不是很稳定**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

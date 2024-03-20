@@ -115,7 +115,7 @@ roslaunch rtabmap_ros rtabmap.launch rtabmap_args:="--delete_db_on_start" depth_
 
 https://blog.csdn.net/Starry_Sheep/article/details/124725504
 
-```
+```shell
 sudo apt-get install ros-melodic-rtabmap ros-melodic-rtabmap-ros 
 
 sudo apt-get remove ros-melodic-rtabmap ros-melodic-rtabmap-ros
@@ -123,7 +123,7 @@ sudo apt-get remove ros-melodic-rtabmap ros-melodic-rtabmap-ros
 
 这个不需要安装在工作目录下
 
-```
+```shell
 cd 
 git clone https://github.com/introlab/rtabmap.git rtabmap
 cd rtabmap/build
@@ -135,7 +135,7 @@ make install
 安装RTABMAP_ROS
 这个安装在工作目录下
 
-```
+```shell
 mkdir rtabmap_ws
 cd rtabmap_ws
 git clone https://github.com/introlab/rtabmap_ros.git rtabmap_ros
@@ -316,6 +316,11 @@ catkin build
 
 # rtabmap 跑 euroc  noVINS/VINS
 
+```
+编译成功 跑数据集的时候 出现odometry: waiting imu to initialize orientation (wait_imu_to_init=true)
+在launch文件里面把参数imu_topic的值改成/imu0
+```
+
 ```shell
 //NOVINS
 roslaunch rtabmap_examples euroc_datasets.launch MH_seq:=true
@@ -326,6 +331,8 @@ roslaunch rtabmap_examples euroc_datasets.launch args:="--Odom/Strategy 9 OdomVI
 
 rosbag play --clock MH_01_easy.bag
 ```
+
+
 
 
 
