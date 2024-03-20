@@ -289,7 +289,6 @@ sudo apt-get install octovis
 
 ```cobol
 octovis 2022.bt
-      
 ```
 
 
@@ -307,7 +306,7 @@ https://github.com/IntelRealSense/realsense-ros/wiki/SLAM-with-D435i#personalize
 
 ## 3.1安装rtabmap
 
-```
+```shell
 sudo apt-get install ros-melodic-rtabmap ros-melodic-rtabmap-ros 
 
 sudo apt-get remove ros-melodic-rtabmap ros-melodic-rtabmap-ros
@@ -315,7 +314,7 @@ sudo apt-get remove ros-melodic-rtabmap ros-melodic-rtabmap-ros
 
 **这个不需要安装在工作目录下**
 
-```
+```shell
 cd 
 git clone https://github.com/introlab/rtabmap.git rtabmap
 cd rtabmap/build
@@ -327,7 +326,7 @@ make install
 **安装RTABMAP_ROS**
 **这个安装在工作目录下**
 
-```
+```shell
 cd catkin_ws
 git clone https://github.com/introlab/rtabmap_ros.git rtabmap_ros
 catkin build
@@ -341,14 +340,14 @@ catkin build
 
 **rtabmap 跑 euroc**
 
-```
+```shell
 //NOVINS
 roslaunch rtabmap_examples euroc_datasets.launch MH_seq:=true
 
 rosbag play --clock MH_01_easy.bag
 ```
 
-```
+```shell
 编译成功 跑数据集的时候 出现odometry: waiting imu to initialize orientation (wait_imu_to_init=true)
 在launch文件里面把参数imu_topic的值改成/imu0
 ```
@@ -357,7 +356,7 @@ rosbag play --clock MH_01_easy.bag
 
 **查看是否链接到VINS**
 
-```
+```shell
 root@e088e9462c1a:~/catkin_ws# rosrun rtabmap_odom rgbd_odometry --version
 ```
 
@@ -373,7 +372,7 @@ https://gist.github.com/matlabbe/795ab37067367dca58bbadd8201d986c
 
 **下载第一个**[**vins-fusion_be55a93_pull136.patch**](https://gist.github.com/matlabbe/795ab37067367dca58bbadd8201d986c#file-vins-fusion_be55a93_pull136-patch)到VINS-FUSION文件夹中
 
-```
+```shell
 git apply vins-fusion_be55a93_pull136.patch
 cd ~/catkin_ws
 catkin build
@@ -381,7 +380,7 @@ catkin build
 
 **然后到rtabmap下**
 
-```
+```shell
 cd ~/rtabmap/build
 cmake -DCMAKE_INSTALL_PREFIX=~/catkin_ws/devel -DWITH_VINS=ON ..
 make -j4
@@ -390,7 +389,7 @@ make install
 
 **最后检查是否链接成功**
 
-```
+```shell
 cd ~/catkin_ws
 catkin build
 source devel/setup.bash
@@ -399,7 +398,7 @@ rosrun rtabmap_odom rgbd_odometry --version
 
 **测试euroc数据集**
 
-```
+```shell
 //WITH-VINS
 roslaunch rtabmap_examples euroc_datasets.launch args:="--Odom/Strategy 9 OdomVINS/ConfigPath ~/catkin_ws/src/VINS-Fusion/config/euroc/euroc_stereo_imu_config.yaml" MH_seq:=true raw_images_for_odom:=true
 
@@ -408,7 +407,7 @@ rosbag play --clock MH_01_easy.bag
 
 ![image-20240312175012684](/home/sbim/.config/Typora/typora-user-images/image-20240312175012684.png)
 
-```
+```shell
 //支线：https://github.com/IntelRealSense/realsense-ros/wiki/SLAM-with-D435i#personalize-rviz
 
 sudo apt-get install ros-kinetic-imu-filter-madgwick
@@ -432,7 +431,7 @@ roslaunch realsense2_camera opensource_tracking.launch
 
 **运行**
 
-```
+```shell
 roslaunch rtabmap_examples test_d435i_vio.launch
 
 roslaunch rtabmap_examples test_d435i_vio.launch args:="--Odom/Strategy 9 OdomVINS/ConfigPath ~/catkin_ws/src/VINS-Fusion/config/realsense_d435i/realsense_stereo_imu_config.yaml"
