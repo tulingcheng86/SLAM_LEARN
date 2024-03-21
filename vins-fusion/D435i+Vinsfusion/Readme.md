@@ -443,19 +443,247 @@ roslaunch rtabmap_examples test_d435i_vio.launch args:="--Odom/Strategy 9 OdomVI
 
 
 
+**解决了 **
+
+**用VINS-RTABMAP 稳定运行的方案**
+
+**test_d435i_vio.launch内容**
+
+```c++
+<?xml version="1.0"?>
+<launch>
+
+<!-- Example usage of RTAB-Map with VINS-Fusion support for realsense D435i.
+     Make sure to disable the IR emitter or put a tape on the IR emitter to
+     avoid VINS tracking the fixed IR points (that would cause large drifts) -->
+
+<arg name="rtabmap_viz" default="true"/>
+<arg name="rviz"       default="false"/>
+<arg name="depth_mode" default="true"/>
+<arg name="odom_strategy" default="9"/> <!-- default VINS -->
+<arg name="unite_imu_method" default="linear_interpolation"/> <!-- "copy" or "linear_interpolation" -->
+
+<include file="$(find realsense2_camera)/launch/rs_aligned_depth.launch">
+   <arg name="align_depth"   value="$(arg depth_mode)"/>
+   <arg name="unite_imu_method" value="$(arg unite_imu_method)"/>
+   <arg name="enable_gyro"   value="true"/>
+   <arg name="enable_accel"  value="true"/>
+   <arg name="enable_infra1" value="true"/>
+   <arg name="enable_infra2" value="true"/>
+   <arg name="gyro_fps"      value="200"/>
+   <arg name="accel_fps"     value="250"/>
+   <arg name="enable_sync"   value="true"/>
+</include>
+
+<node pkg="imu_filter_madgwick" type="imu_filter_node" name="imu_filter_node">
+   <param name="use_mag"       value="false"/>
+   <param name="publish_tf"    value="false"/>
+   <param name="world_frame"   value="enu"/>
+   <remap from="/imu/data_raw" to="/camera/imu"/>
+   <remap from="/imu/data"     to="/rtabmap/imu"/>
+</node>
+<!-- Remap VINS-Fusion odometry topic to RTAB-Map -->
+<!--   <remap from="/rtabmap/odom" to="/vins_fusion/odom_topic"/> -->
+
+<!-- RTAB-Map: depth mode -->
+<!-- We have to launch stereo_odometry externally from rtabmap.launch so that rtabmap can use RGB-D input -->
+<group ns="rtabmap">
+<node if="$(arg depth_mode)" pkg="rtabmap_odom" type="stereo_odometry" name="stereo_odometry" args="--Optimizer/GravitySigma 0.3 --Odom/Strategy $(arg odom_strategy) --OdomVINS/ConfigPath $(find vins)/../config/realsense_d435i/realsense_stereo_imu_config.yaml" output="screen">
+   <remap from="left/image_rect"   to="/camera/infra1/image_rect_raw"/>
+   <remap from="right/image_rect"  to="/camera/infra2/image_rect_raw"/>
+   <remap from="left/camera_info"  to="/camera/infra1/camera_info"/>
+   <remap from="right/camera_info" to="/camera/infra2/camera_info"/>
+   <remap from="imu"               to="/rtabmap/imu"/>
+   <param name="frame_id"          value="camera_link"/>
+   <param name="wait_imu_to_init"  value="true"/>
+</node>
+</group>
+<include if="$(arg depth_mode)" file="$(find rtabmap_launch)/launch/rtabmap.launch">
+   <arg name="rtabmap_args"      value="--delete_db_on_start --Optimizer/GravitySigma 0.3"/>
+   <arg name="rgb_topic"         value="/camera/color/image_raw"/>
+   <arg name="depth_topic"       value="/camera/aligned_depth_to_color/image_raw"/>
+   <arg name="camera_info_topic" value="/camera/color/camera_info"/>
+   <arg name="visual_odometry"   value="false"/>
+   <arg name="approx_sync"       value="false"/>
+   <arg name="frame_id"          value="camera_link"/>
+   <arg name="imu_topic"         value="/rtabmap/imu"/>
+   <arg name="rtabmap_viz"        value="$(arg rtabmap_viz)"/>
+   <arg name="rviz"              value="$(arg rviz)"/>
+</include>
+
+<!-- RTAB-Map: Stereo mode -->
+<include unless="$(arg depth_mode)" file="$(find rtabmap_launch)/launch/rtabmap.launch">
+   <arg name="rtabmap_args"            value="--delete_db_on_start --Optimizer/GravitySigma 0.3 --Odom/Strategy $(arg odom_strategy) --OdomVINS/ConfigPath $(find vins)/../config/realsense_d435i/realsense_stereo_imu_config.yaml"/>
+   <arg name="left_image_topic"        value="/camera/infra1/image_rect_raw"/>
+   <arg name="right_image_topic"       value="/camera/infra2/image_rect_raw"/>
+   <arg name="left_camera_info_topic"  value="/camera/infra1/camera_info"/>
+   <arg name="right_camera_info_topic" value="/camera/infra2/camera_info"/>
+   <arg name="stereo"                  value="true"/>
+   <arg name="frame_id"                value="camera_link"/>
+   <arg name="imu_topic"               value="/rtabmap/imu"/>
+   <arg name="wait_imu_to_init"        value="true"/>
+   <arg name="rtabmap_viz"              value="$(arg rtabmap_viz)"/>
+   <arg name="rviz"                    value="$(arg rviz)"/>
+</include>
+
+</launch>
+
+```
 
 
 
+**rs_aligned_depth.launch内容**
 
+```c++
+<launch>
+  <arg name="serial_no"           default=""/>
+  <arg name="usb_port_id"         default=""/>
+  <arg name="device_type"         default=""/>
+  <arg name="json_file_path"      default=""/>
+  <arg name="camera"              default="camera"/>
+  <arg name="tf_prefix"           default="$(arg camera)"/>
+  <arg name="external_manager"    default="false"/>
+  <arg name="manager"             default="realsense2_camera_manager"/>
+  <arg name="output"              default="screen"/>
+  <arg name="respawn"              default="false"/>
 
+  <arg name="fisheye_width"       default="640"/>
+  <arg name="fisheye_height"      default="480"/>
+  <arg name="enable_fisheye"      default="true"/>
 
+  <arg name="depth_width"         default="640"/>
+  <arg name="depth_height"        default="480"/>
+  <arg name="enable_depth"        default="true"/>
+  <arg name="enable_pointcloud"         default="false"/>
+  <arg name="confidence_width"    default="-1"/>
+  <arg name="confidence_height"   default="-1"/>
+  <arg name="enable_confidence"   default="true"/>
+  <arg name="confidence_fps"      default="-1"/>
+  <arg name="pointcloud_texture_stream" default="RS2_STREAM_COLOR"/>
+  <arg name="pointcloud_texture_index"  default="0"/>
+  <arg name="allow_no_texture_points"   default="false"/>
+  <arg name="ordered_pc"                default="false"/>
+  <arg name="infra_width"         default="640"/>
+  <arg name="infra_height"        default="480"/>
+  <arg name="enable_infra1"       default="true"/>
+  <arg name="enable_infra2"       default="true"/>
 
+  <arg name="color_width"         default="640"/>
+  <arg name="color_height"        default="480"/>
+  <arg name="enable_color"        default="true"/>
 
+  <arg name="fisheye_fps"         default="30"/>
+  <arg name="depth_fps"           default="30"/>
+  <arg name="infra_fps"           default="30"/>
+  <arg name="color_fps"           default="30"/>
+  <arg name="gyro_fps"            default="400"/>
+  <arg name="accel_fps"           default="250"/>
+  <arg name="enable_gyro"         default="true"/>
+  <arg name="enable_accel"        default="true"/>
 
+  <arg name="publish_tf"                default="true"/>
+  <arg name="tf_publish_rate"           default="0"/>
 
+  <arg name="filters"                   default=""/>
+  <arg name="clip_distance"             default="-2"/>
+  <arg name="linear_accel_cov"          default="0.01"/>
+  <arg name="initial_reset"             default="false"/>
+  <arg name="reconnect_timeout"         default="6.0"/>
+  <arg name="wait_for_device_timeout"   default="-1.0"/>
+  <arg name="unite_imu_method"          default="linear_interpolation"/>
+  <arg name="topic_odom_in"             default="odom_in"/>
+  <arg name="calib_odom_file"           default=""/>
+  <arg name="publish_odom_tf"           default="true"/>
 
+  <arg name="stereo_module/exposure/1"  default="7500"/>
+  <arg name="stereo_module/gain/1"      default="16"/>
+  <arg name="stereo_module/exposure/2"  default="1"/>
+  <arg name="stereo_module/gain/2"      default="16"/>
+  <arg name="enable_sync"               default="true"/>
+  <arg name="align_depth"               default="true"/>
+  
 
+  <group ns="$(arg camera)">
+    <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
+      <arg name="tf_prefix"                value="$(arg tf_prefix)"/>
+      <arg name="external_manager"         value="$(arg external_manager)"/>
+      <arg name="manager"                  value="$(arg manager)"/>
+      <arg name="output"                   value="$(arg output)"/>
+      <arg name="respawn"                  value="$(arg respawn)"/>
+      <arg name="serial_no"                value="$(arg serial_no)"/>
+      <arg name="usb_port_id"              value="$(arg usb_port_id)"/>
+      <arg name="device_type"              value="$(arg device_type)"/>
+      <arg name="json_file_path"           value="$(arg json_file_path)"/>
 
+      <arg name="enable_pointcloud"        value="$(arg enable_pointcloud)"/>
+      <arg name="pointcloud_texture_stream" value="$(arg pointcloud_texture_stream)"/>
+      <arg name="pointcloud_texture_index"  value="$(arg pointcloud_texture_index)"/>
+      <arg name="enable_sync"              value="$(arg enable_sync)"/>
+      <arg name="align_depth"              value="$(arg align_depth)"/>
+
+      <arg name="fisheye_width"            value="$(arg fisheye_width)"/>
+      <arg name="fisheye_height"           value="$(arg fisheye_height)"/>
+      <arg name="enable_fisheye"           value="$(arg enable_fisheye)"/>
+
+      <arg name="depth_width"              value="$(arg depth_width)"/>
+      <arg name="depth_height"             value="$(arg depth_height)"/>
+      <arg name="enable_depth"             value="$(arg enable_depth)"/>
+
+      <arg name="confidence_width"         value="$(arg confidence_width)"/>
+      <arg name="confidence_height"        value="$(arg confidence_height)"/>
+      <arg name="enable_confidence"        value="$(arg enable_confidence)"/>
+      <arg name="confidence_fps"           value="$(arg confidence_fps)"/>
+
+      <arg name="color_width"              value="$(arg color_width)"/>
+      <arg name="color_height"             value="$(arg color_height)"/>
+      <arg name="enable_color"             value="$(arg enable_color)"/>
+
+      <arg name="infra_width"              value="$(arg infra_width)"/>
+      <arg name="infra_height"             value="$(arg infra_height)"/>
+      <arg name="enable_infra1"            value="$(arg enable_infra1)"/>
+      <arg name="enable_infra2"            value="$(arg enable_infra2)"/>
+
+      <arg name="fisheye_fps"              value="$(arg fisheye_fps)"/>
+      <arg name="depth_fps"                value="$(arg depth_fps)"/>
+      <arg name="infra_fps"                value="$(arg infra_fps)"/>
+      <arg name="color_fps"                value="$(arg color_fps)"/>
+      <arg name="gyro_fps"                 value="$(arg gyro_fps)"/>
+      <arg name="accel_fps"                value="$(arg accel_fps)"/>
+      <arg name="enable_gyro"              value="$(arg enable_gyro)"/>
+      <arg name="enable_accel"             value="$(arg enable_accel)"/>
+
+      <arg name="publish_tf"               value="$(arg publish_tf)"/>
+      <arg name="tf_publish_rate"          value="$(arg tf_publish_rate)"/>
+
+      <arg name="filters"                  value="$(arg filters)"/>
+      <arg name="clip_distance"            value="$(arg clip_distance)"/>
+      <arg name="linear_accel_cov"         value="$(arg linear_accel_cov)"/>
+      <arg name="initial_reset"            value="$(arg initial_reset)"/>
+      <arg name="reconnect_timeout"        value="$(arg reconnect_timeout)"/>
+      <arg name="wait_for_device_timeout"  value="$(arg wait_for_device_timeout)"/>
+      <arg name="unite_imu_method"         value="$(arg unite_imu_method)"/>
+      <arg name="topic_odom_in"            value="$(arg topic_odom_in)"/>
+      <arg name="calib_odom_file"          value="$(arg calib_odom_file)"/>
+      <arg name="publish_odom_tf"          value="$(arg publish_odom_tf)"/>
+      <arg name="stereo_module/exposure/1" value="$(arg stereo_module/exposure/1)"/>
+      <arg name="stereo_module/gain/1"     value="$(arg stereo_module/gain/1)"/>
+      <arg name="stereo_module/exposure/2" value="$(arg stereo_module/exposure/2)"/>
+      <arg name="stereo_module/gain/2"     value="$(arg stereo_module/gain/2)"/>
+
+      <arg name="allow_no_texture_points"  value="$(arg allow_no_texture_points)"/>
+      <arg name="ordered_pc"               value="$(arg ordered_pc)"/>
+      
+    </include>
+  </group>
+</launch>
+
+```
+
+**运行**
+
+```shell
+roslaunch rtabmap_examples test_d435i_vio.launch
+```
 
 
 
