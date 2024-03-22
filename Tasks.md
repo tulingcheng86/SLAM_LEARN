@@ -8,9 +8,9 @@
 - [x] xtdrone 仿真环境搭建，部署egoplanner
 - [x] 能用640*480 参数跑VIO-RTABMAP
 - [x] d435i录制包 **离线**跑vio-rtabmap 看要怎么编写相机启动函数和录制哪些话题才能启动
+- [x] 用evo分析了VINS-RTAB和RTAB跑MH01数据集的轨迹，VINS-RTABMAP的效果还差些。。应该是参数没设好
 - [ ] 能录制跑 一开始效果还好，但是播放到一段时间后数据没那么全，还是录制的时候量太大了，可以分包来录制试试
 - [ ] 建图保存加到仿真环境里面
-- [ ] 
 - [ ] 
 
 
@@ -476,6 +476,8 @@ evo_traj tum  MH01_ground.txt rtabmap_MH01.tum rtabmap_MH01_VINS.tum --ref MH01_
 5. **Standard Deviation（STD）：标准差**，表示误差值的离散程度。**标准差越小表示误差值集中在均值附近**，反之则表示误差值分布较为分散。
 
 
+
+**结论**
 
 带了VINS的还更差（笑哭）
 
