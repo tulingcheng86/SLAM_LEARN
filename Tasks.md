@@ -5,8 +5,12 @@
 - [x] 建立一个完整的docker
 - [x] ros1 的包给ros2跑试下，能很好运行
 - [ ] 有路径估计，定位，轨迹规划
-- [ ] xtdrone 仿真环境搭建，部署egoplanner
-- [ ] d435i录制包 离线跑vio-rtabmap 看要怎么编写相机启动函数和录制哪些话题才能启动
+- [x] xtdrone 仿真环境搭建，部署egoplanner
+- [x] 能用640*480 参数跑VIO-RTABMAP
+- [x] d435i录制包 **离线**跑vio-rtabmap 看要怎么编写相机启动函数和录制哪些话题才能启动
+- [ ] 能录制跑 一开始效果还好，但是播放到一段时间后数据没那么全，还是录制的时候量太大了，可以分包来录制试试
+- [ ] 建图保存加到仿真环境里面
+- [ ] 
 - [ ] 
 
 
@@ -481,9 +485,9 @@ sudo ln -s /home/labh/.local/share/Trash/files/devel.2/lib/libpose_utils.so /usr
 
 
 
-# 命
+# **查看当前摄像头可配置参数**
 
-rs-enumerate-devices
+rs-enumerate-devices   **查看当前摄像头可配置参数**
 
 
 
@@ -495,168 +499,7 @@ Done checking log file disk usage. Usage is <1GB.
 
 started roslaunch server http://3a24ef7ed95e:43527/
 
-SUMMARY
-========
 
-PARAMETERS
- * /camera/realsense2_camera/accel_fps: 250
- * /camera/realsense2_camera/accel_frame_id: camera_accel_frame
- * /camera/realsense2_camera/accel_optical_frame_id: camera_accel_opti...
- * /camera/realsense2_camera/align_depth: True
- * /camera/realsense2_camera/aligned_depth_to_color_frame_id: camera_aligned_de...
- * /camera/realsense2_camera/aligned_depth_to_fisheye1_frame_id: camera_aligned_de...
- * /camera/realsense2_camera/aligned_depth_to_fisheye2_frame_id: camera_aligned_de...
- * /camera/realsense2_camera/aligned_depth_to_fisheye_frame_id: camera_aligned_de...
- * /camera/realsense2_camera/aligned_depth_to_infra1_frame_id: camera_aligned_de...
- * /camera/realsense2_camera/aligned_depth_to_infra2_frame_id: camera_aligned_de...
- * /camera/realsense2_camera/allow_no_texture_points: False
- * /camera/realsense2_camera/base_frame_id: camera_link
- * /camera/realsense2_camera/calib_odom_file: 
- * /camera/realsense2_camera/clip_distance: -2.0
- * /camera/realsense2_camera/color_fps: 30
- * /camera/realsense2_camera/color_frame_id: camera_color_frame
- * /camera/realsense2_camera/color_height: 480
- * /camera/realsense2_camera/color_optical_frame_id: camera_color_opti...
- * /camera/realsense2_camera/color_width: 640
- * /camera/realsense2_camera/confidence_fps: -1
- * /camera/realsense2_camera/confidence_height: -1
- * /camera/realsense2_camera/confidence_width: -1
- * /camera/realsense2_camera/depth_fps: 30
- * /camera/realsense2_camera/depth_frame_id: camera_depth_frame
- * /camera/realsense2_camera/depth_height: 480
- * /camera/realsense2_camera/depth_optical_frame_id: camera_depth_opti...
- * /camera/realsense2_camera/depth_width: 640
- * /camera/realsense2_camera/device_type: 
- * /camera/realsense2_camera/enable_accel: True
- * /camera/realsense2_camera/enable_color: True
- * /camera/realsense2_camera/enable_confidence: True
- * /camera/realsense2_camera/enable_depth: True
- * /camera/realsense2_camera/enable_fisheye1: False
- * /camera/realsense2_camera/enable_fisheye2: False
- * /camera/realsense2_camera/enable_fisheye: False
- * /camera/realsense2_camera/enable_gyro: True
- * /camera/realsense2_camera/enable_infra1: True
- * /camera/realsense2_camera/enable_infra2: True
- * /camera/realsense2_camera/enable_infra: True
- * /camera/realsense2_camera/enable_pointcloud: False
- * /camera/realsense2_camera/enable_pose: False
- * /camera/realsense2_camera/enable_sync: True
- * /camera/realsense2_camera/filters: 
- * /camera/realsense2_camera/fisheye1_frame_id: camera_fisheye1_f...
- * /camera/realsense2_camera/fisheye1_optical_frame_id: camera_fisheye1_o...
- * /camera/realsense2_camera/fisheye2_frame_id: camera_fisheye2_f...
- * /camera/realsense2_camera/fisheye2_optical_frame_id: camera_fisheye2_o...
- * /camera/realsense2_camera/fisheye_fps: -1
- * /camera/realsense2_camera/fisheye_frame_id: camera_fisheye_frame
- * /camera/realsense2_camera/fisheye_height: -1
- * /camera/realsense2_camera/fisheye_optical_frame_id: camera_fisheye_op...
- * /camera/realsense2_camera/fisheye_width: -1
- * /camera/realsense2_camera/gyro_fps: 200
- * /camera/realsense2_camera/gyro_frame_id: camera_gyro_frame
- * /camera/realsense2_camera/gyro_optical_frame_id: camera_gyro_optic...
- * /camera/realsense2_camera/imu_optical_frame_id: camera_imu_optica...
- * /camera/realsense2_camera/infra1_frame_id: camera_infra1_frame
- * /camera/realsense2_camera/infra1_optical_frame_id: camera_infra1_opt...
- * /camera/realsense2_camera/infra2_frame_id: camera_infra2_frame
- * /camera/realsense2_camera/infra2_optical_frame_id: camera_infra2_opt...
- * /camera/realsense2_camera/infra_fps: 30
- * /camera/realsense2_camera/infra_height: 480
- * /camera/realsense2_camera/infra_rgb: False
- * /camera/realsense2_camera/infra_width: 640
- * /camera/realsense2_camera/initial_reset: False
- * /camera/realsense2_camera/json_file_path: 
- * /camera/realsense2_camera/linear_accel_cov: 0.01
- * /camera/realsense2_camera/odom_frame_id: camera_odom_frame
- * /camera/realsense2_camera/ordered_pc: False
- * /camera/realsense2_camera/pointcloud_texture_index: 0
- * /camera/realsense2_camera/pointcloud_texture_stream: RS2_STREAM_COLOR
- * /camera/realsense2_camera/pose_frame_id: camera_pose_frame
- * /camera/realsense2_camera/pose_optical_frame_id: camera_pose_optic...
- * /camera/realsense2_camera/publish_odom_tf: True
- * /camera/realsense2_camera/publish_tf: True
- * /camera/realsense2_camera/reconnect_timeout: 6.0
- * /camera/realsense2_camera/rosbag_filename: 
- * /camera/realsense2_camera/serial_no: 
- * /camera/realsense2_camera/stereo_module/exposure/1: 7500
- * /camera/realsense2_camera/stereo_module/exposure/2: 1
- * /camera/realsense2_camera/stereo_module/gain/1: 16
- * /camera/realsense2_camera/stereo_module/gain/2: 16
- * /camera/realsense2_camera/tf_publish_rate: 0.0
- * /camera/realsense2_camera/topic_odom_in: odom_in
- * /camera/realsense2_camera/unite_imu_method: linear_interpolation
- * /camera/realsense2_camera/usb_port_id: 
- * /camera/realsense2_camera/wait_for_device_timeout: -1.0
- * /camera/stereo_module/emitter_enabled: 0
- * /rosdistro: melodic
- * /rosversion: 1.14.13
 
-NODES
-  /camera/
-    realsense2_camera (nodelet/nodelet)
-    realsense2_camera_manager (nodelet/nodelet)
 
-auto-starting new master
-process[master]: started with pid [1135913]
-ROS_MASTER_URI=http://localhost:11311
 
-setting /run_id to 8201d0c4-e778-11ee-83f5-0242ac110003
-process[rosout-1]: started with pid [1135924]
-started core service [/rosout]
-process[camera/realsense2_camera_manager-2]: started with pid [1135931]
-[ INFO] [1711021526.440742210]: Initializing nodelet with 20 worker threads.
-process[camera/realsense2_camera-3]: started with pid [1135932]
-[ INFO] [1711021526.759582509]: RealSense ROS v2.3.2
-[ INFO] [1711021526.759600377]: Built with LibRealSense v2.54.2
-[ INFO] [1711021526.759606778]: Running with LibRealSense v2.54.2
-[ INFO] [1711021526.775284771]:  
-[ INFO] [1711021526.789775419]: Device with serial number 207522071003 was found.
-
-[ INFO] [1711021526.789792154]: Device with physical ID /sys/devices/pci0000:00/0000:00:14.0/usb2/2-1/2-1.4/2-1.4:1.0/video4linux/video0 was found.
-[ INFO] [1711021526.789797067]: Device with name Intel RealSense D435I was found.
-[ INFO] [1711021526.789942395]: Device with port number 2-1.4 was found.
-[ INFO] [1711021526.789951302]: Device USB type: 3.2
-[ INFO] [1711021526.790677910]: getParameters...
-[ INFO] [1711021526.805155905]: setupDevice...
-[ INFO] [1711021526.805168321]: JSON file is not provided
-[ INFO] [1711021526.805173244]: ROS Node Namespace: camera
-[ INFO] [1711021526.805178843]: Device Name: Intel RealSense D435I
-[ INFO] [1711021526.805189273]: Device Serial No: 207522071003
-[ INFO] [1711021526.805195309]: Device physical port: /sys/devices/pci0000:00/0000:00:14.0/usb2/2-1/2-1.4/2-1.4:1.0/video4linux/video0
-[ INFO] [1711021526.805202546]: Device FW version: 5.13.0.50
-[ INFO] [1711021526.805208172]: Device Product ID: 0x0B3A
-[ INFO] [1711021526.805215732]: Enable PointCloud: Off
-[ INFO] [1711021526.805221561]: Align Depth: On
-[ INFO] [1711021526.805229016]: Sync Mode: On
-[ INFO] [1711021526.805250554]: Device Sensors: 
-[ INFO] [1711021526.806424657]: Stereo Module was found.
-[ INFO] [1711021526.809699682]: RGB Camera was found.
-[ INFO] [1711021526.809784740]: Motion Module was found.
-[ INFO] [1711021526.809798491]: (Infrared, 0) sensor isn't supported by current device! -- Skipping...
-[ INFO] [1711021526.809806368]: (Confidence, 0) sensor isn't supported by current device! -- Skipping...
-[ INFO] [1711021526.810050005]: num_filters: 1
-[ INFO] [1711021526.810057951]: Setting Dynamic reconfig parameters.
-[ INFO] [1711021526.827482913]: Done Setting Dynamic reconfig parameters.
-[ INFO] [1711021526.827755054]: depth stream is enabled - width: 640, height: 480, fps: 30, Format: Z16
-[ INFO] [1711021526.827866660]: infra1 stream is enabled - width: 640, height: 480, fps: 30, Format: Y8
-[ INFO] [1711021526.827971856]: infra2 stream is enabled - width: 640, height: 480, fps: 30, Format: Y8
-[ INFO] [1711021526.828248937]: color stream is enabled - width: 640, height: 480, fps: 30, Format: RGB8
-[ INFO] [1711021526.829527096]: gyro stream is enabled - fps: 200
-[ WARN] [1711021526.829536405]: No mathcing profile found for accel with fps=250
-[ WARN] [1711021526.829543684]: Using default profile instead.
-[ INFO] [1711021526.829551444]: accel stream is enabled - fps: 100
-[ INFO] [1711021526.829561380]: setupPublishers...
-[ INFO] [1711021526.830500145]: Expected frequency for depth = 30.00000
-[ INFO] [1711021526.840611752]: Expected frequency for infra1 = 30.00000
-[ INFO] [1711021526.845801057]: Expected frequency for infra2 = 30.00000
-[ INFO] [1711021526.851474101]: Expected frequency for color = 30.00000
-[ INFO] [1711021526.856751386]: Expected frequency for aligned_depth_to_color = 30.00000
-[ INFO] [1711021526.862299998]: Start publisher IMU
-[ INFO] [1711021526.862947300]: setupStreams...
- 21/03 11:45:26,874 WARNING [135906503403264] (ds-calib-parsers.cpp:41) IMU Calibration is not available, default intrinsic and extrinsic will be used.
-[ INFO] [1711021526.913375251]: SELECTED BASE:Depth, 0
-[ INFO] [1711021526.916654010]: RealSense Node Is Up!
-[ WARN] [1711021526.983944839]: 
-[ WARN] [1711021527.827781332]: Hardware Notification:IR stream start failure,1.71102e+12,Error,Hardware Error
-^C[camera/realsense2_camera-3] killing on exit
-[camera/realsense2_camera_manager-2] killing on exit
-[rosout-1] killing on exit
