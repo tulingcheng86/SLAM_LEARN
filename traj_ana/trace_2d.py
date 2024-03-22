@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import CheckButtons
 
 # 读取数据，忽略最后的NaN列
-data = pd.read_csv('/home/sbim/vo_path_with_timestamp.txt', delimiter=',', header=None, usecols=[0, 1, 2, 3])
+data = pd.read_csv('output.txt', delimiter=',', header=None, usecols=[0, 1, 2, 3])
 
 # 提取时间戳和位置数据
 timestamps = data[0]

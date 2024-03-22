@@ -4,7 +4,7 @@
 - [x] 录一个场景大一点的包，开回环不开回环都测一下，能很好运行
 - [x] 建立一个完整的docker
 - [x] ros1 的包给ros2跑试下，能很好运行
-- [ ] 有路径估计，定位，轨迹规划
+- [ ] 路径估计，定位，轨迹规划
 - [x] xtdrone 仿真环境搭建，部署egoplanner
 - [x] 能用640*480 参数跑VIO-RTABMAP
 - [x] d435i录制包 **离线**跑vio-rtabmap 看要怎么编写相机启动函数和录制哪些话题才能启动
@@ -15,7 +15,7 @@
 
 
 
-# 去除结构光
+# 1去除结构光
 
 ```
   <arg name="allow_no_texture_points"   default="false"/>
@@ -31,23 +31,23 @@
   </rosparam>
 ```
 
-# 录制bag
+# 2录制bag
 
 ```
-  rosbag record -O d435i-test.bag /camera/imu /camera/infra1/image_rect_raw /camera/infra2/image_rect_raw /camera/infra1/camera_info /camera/infra2/camera_info
+ rosbag record -O d435i-test.bag /camera/imu /camera/infra1/image_rect_raw /camera/infra2/image_rect_raw /camera/infra1/camera_info /camera/infra2/camera_info
 
 
   colcon build --packages-select realsense2_camera
 ```
 
-# 查看QOS
+# 3查看QOS
 
 tlc@192.168.100.236
 ros2 topic info --verbose /camera/camera/imu
 
 export ROS_DOMAIN_ID=30
 
-# ip问题 GPT4问问题 
+# 4 ip问题 GPT4问问题 
 
 这个jetson nano连接了一个D435i相机，并且配置好了realsense固件和realsense-ros，通过roslaunch realsense2_camera rs_fusion_camera_stereo.launch 启动相机ros话题节点，可以查看到相机的各个话题信息。现在我要将 jetson nano发布的ros话题信息发送给同一局域网下的电脑，使得这台电脑能rostopic list查看到话题，也能订阅这个话题。有什么方法吗
 
@@ -64,17 +64,18 @@ export ROS_IP=172.17.0.2
 export ROS_MASTER_URI=http://192.168.100.207:11311
 export ROS_IP=172.17.0.2
 
-# SCP复制
+# 5 SCP复制
 ```shell
 scp jetson@192.168.100.207:/home/jetson/realsense_ws/data/d435ii.bag /你的本地地址/
 ```
 
-# .sh
+# 6 .sh
 ```shell
 roslaunch vins vins_rviz.launch
+
 rosrun vins vins_node src/VINS-Fusion/config/realsense_d435i/realsense_stereo_imu_config.yaml
 
-rosrun loop_fusion loop_fusion_node src/VINS-Fusion/config/realsense_d435i/realsense_stereo_imu_config.yaml 
+rosrun loop_fusion loop_fusion_node  src/VINSFusion/config/realsense_d435i/realsense_stereo_imu_config.yaml 
 
 roslaunch octomap_server octomap_mapping.launch
 
@@ -96,7 +97,7 @@ roslaunch rtabmap_ros rtabmap.launch \
 
 
 
-# 容器启动 /构建 命令
+# 7 容器启动 /构建 命令
 ```shell
 xhost +
 docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix:rw --privileged --gpus all -e DISPLAY=:1 -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=all -e PYTHONUNBUFFERED=1 -e QT_X11_NO_MITSHM=1 wdczz/xtdrone:2.3 /bin/bash
@@ -106,7 +107,7 @@ docker build -t myapp:v1 .
 
 
 
-# rtabmap
+# 8 rtabmap
 
 ```shell
 roslaunch realsense2_camera rs_fusion_camera_stereo.launch
@@ -153,7 +154,7 @@ catkin build
 
 
 
-# 保存
+## 保存
 
 ```c++
 <launch>
@@ -321,7 +322,7 @@ catkin build
       
 ```
 
-# rtabmap 跑 euroc  noVINS/VINS
+# 9 rtabmap 跑 euroc  noVINS/VINS
 
 ```
 编译成功 跑数据集的时候 出现odometry: waiting imu to initialize orientation (wait_imu_to_init=true)
@@ -431,7 +432,7 @@ rosbag record -O my_bagfile_2.bag /camera/aligned_depth_to_color/camera_info  ca
 
 realsense_d435i/realsense_stereo_imu_config.yaml
 
-# evo
+# 10 evo
 
 ```shell
  evo_traj tum MH_01-GT.tum -p plot_mode=xyz
@@ -483,7 +484,17 @@ evo_traj tum  MH01_ground.txt rtabmap_MH01.tum rtabmap_MH01_VINS.tum --ref MH01_
 
 
 
-# egoplanner
+## 4.分析issac和vinsfusion 自录制包
+
+```
+evo_traj tum vinsfusion.txt issac.txt --ref vinsfusion.txt -va -p
+```
+
+![image-20240322172332108](/home/sbim/.config/Typora/typora-user-images/image-20240322172332108.png)
+
+
+
+# 11 egoplanner
 
 照着教程安装就行
 
@@ -526,9 +537,11 @@ sudo ln -s /home/labh/.local/share/Trash/files/devel.2/lib/libpose_utils.so /usr
 
 
 
-# **查看当前摄像头可配置参数**
+# 12 **查看当前摄像头可配置参数**
 
+```
 rs-enumerate-devices   **查看当前摄像头可配置参数**
+```
 
 
 

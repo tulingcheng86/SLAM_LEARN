@@ -1,7 +1,7 @@
 import re
 
 # 假定输入数据保存在这个文件中
-input_file = 'data.txt'
+input_file = 'issac_path.txt'
 # 输出的TUM格式文件路径
 output_file = 'output.txt'
 
@@ -21,10 +21,11 @@ with open(input_file, 'r') as file, open(output_file, 'w') as out:
         if timestamp_match and position_match and orientation_match:
             # 组合时间戳
             sec, nanosec = timestamp_match.groups()
-            timestamp = float(sec) + float(nanosec) / 1e9
+            # 转换为一个长整数的时间戳
+            combined_timestamp = int(sec) * 1000000000 + int(nanosec)
             # 提取位置和姿态
             x, y, z = position_match.groups()
             qx, qy, qz, qw = orientation_match.groups()
 
-            # 写入TUM格式
-            out.write(f"{timestamp} {x} {y} {z} {qx} {qy} {qz} {qw}\n")
+            # 写入TUM格式，时间戳使用合并后的长整数
+            out.write(f"{combined_timestamp} {x} {y} {z} {qx} {qy} {qz} {qw}\n")
