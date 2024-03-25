@@ -11,6 +11,7 @@
 - [x] 用evo分析了VINS-RTAB和RTAB跑MH01数据集的轨迹，VINS-RTABMAP的效果还差些。。应该是参数没设好
 - [ ] 能录制跑 一开始效果还好，但是播放到一段时间后数据没那么全，还是录制的时候量太大了，可以分包来录制试试
 - [ ] 建图保存加到仿真环境里面
+- [ ] 探索路径规划
 - [ ] 
 
 
@@ -557,5 +558,129 @@ started roslaunch server http://3a24ef7ed95e:43527/
 
 
 
-# 13 改ppt
+# 13 路径规划
+
+![image-20240323110718878](/home/sbim/.config/Typora/typora-user-images/image-20240323110718878.png)
+
+![image-20240323110728156](/home/sbim/.config/Typora/typora-user-images/image-20240323110728156.png)
+
+![image-20240323120331319](/home/sbim/.config/Typora/typora-user-images/image-20240323120331319.png)
+
+
+
+# 14 SLAM 
+
+这几个都是基于ORB-SLAM2的 https://github.com/raulmur/ORB_SLAM2
+
+**DS-SLAM         Semantic_slam**    **cube_slam**
+
+https://github.com/floatlazer/semantic_slam?tab=readme-ov-file
+
+https://github.com/shichaoy/cube_slam
+
+https://github.com/ivipsourcecode/DS-SLAM?tab=readme-ov-file
+
+
+
+pkg-config --modversion opencv
+
+pkg-config --modversion eigen3
+
+pkg-config --modversion pangolin
+
+
+
+
+
+# 15 fangzhen
+
+## 配置PX4
+
+```
+sudo apt-get update 
+
+sudo apt-get install unzip
+
+
+sudo apt-get install python3-pip
+pip3 install kconfiglib
+pip3 install --user jinja2
+pip3 install --user pyyaml
+pip3 install --user jsonschema
+pip3 install --user empy
+pip3 install --user toml
+
+pip3 install --user numpy
+pip3 install --user packaging
+
+sudo apt-get install libxml2-dev libxslt-dev -y
+pip3 install lxml
+
+sudo apt install ros-melodic-gazebo-ros-pkgs
+
+打开~/.bashrc文件，添加以下内容：
+
+source ~/PX4-Autopilot/Tools/setup_gazebo.bash ~/PX4-Autopilot/ ~/PX4-Autopilot/build/px4_sitl_default
+export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/PX4-Autopilot
+export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/PX4-Autopilot/Tools/sitl_gazebo
+
+source ~/.bashrc 
+```
+
+
+
+
+
+## Mavros配置
+
+**二进制安装**
+
+建一个工作空间
+
+然后catkin build
+
+```
+sudo apt install ros-melodic-mavros ros-melodic-mavros-extras
+
+wget https://gitee.com/robin_shaun/XTDrone/raw/master/sitl_config/mavros/install_geographiclib_datasets.sh
+
+sudo chmod a+x ./install_geographiclib_datasets.sh
+# 下面这步需要装⼀段时间,可以耐⼼等待
+sudo ./install_geographiclib_datasets.sh
+# 如果没问题，终端输出的内容如下：
+```
+
+![image-20240323174756640](/home/sbim/.config/Typora/typora-user-images/image-20240323174756640.png)
+
+
+
+## QGC
+
+**安装QGC地面站，可以在下面的网址下载**
+
+https://github.com/mavlink/qgroundcontrol/releases/tag/v4.1.5
+
+wget https://github.com/mavlink/qgroundcontrol/releases/download/v4.1.5/QGroundControl.AppImage
+
+sudo apt-get install espeak libespeak-dev libudev-dev libsdl1.2-dev
+
+**选择 Appimage格式下载**
+
+下载后在地面站目录下执行：
+
+```
+sudo apt install libpulse0 -y
+sudo apt-get install libpulse-mainloop-glib0 -y
+sudo apt install gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl -y
+sudo apt install libfuse2 -y
+sudo apt install libxcb-xinerama0 libxkbcommon-x11-0 libxcb-cursor0 -y
+
+sudo apt-get dist-upgrade -y 
+```
+
+
+
+```
+chmod +x QGroundControl.AppImage
+```
 
