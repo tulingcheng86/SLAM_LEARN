@@ -682,5 +682,27 @@ sudo apt-get dist-upgrade -y
 
 ```
 chmod +x QGroundControl.AppImage
+sudo usermod -a -G dialout $USER
+sudo apt-get remove modemmanager -y
+./QGroundControl.AppImage
+```
+
+
+
+
+
+XTDRONE
+
+```
+git clone https://gitee.com/robin_shaun/XTDrone.git
+cd XTDrone
+git submodule update --init --recursive
+cp sensing/gimbal/gazebo_gimbal_controller_plugin.cpp ~/PX4-Autopilot/Tools/sitl_gazebo/src/
+cp sitl_config/init.d-posix/rcS ~/PX4-Autopilot/ROMFS/px4fmu_common/init.d-posix/
+cp sitl_config/worlds/* ~/PX4-Autopilot/Tools/sitl_gazebo/worlds/
+cp -r sitl_config/models/* ~/PX4-Autopilot/Tools/sitl_gazebo/models/ 
+cp -r sitl_config/launch/* ~/PX4-Autopilot/launch/
+cd ~/.gazebo/models/
+rm -r stereo_camera/ 3d_lidar/ 3d_gpu_lidar/ hokuyo_lidar/
 ```
 
