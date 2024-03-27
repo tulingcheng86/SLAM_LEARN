@@ -588,11 +588,14 @@ pkg-config --modversion eigen3
 
 pkg-config --modversion pangolin
 
+```
+g++ -o output ORB_featrue.cpp `pkg-config --cflags --libs opencv4` -lrealsense2
+
+```
 
 
 
-
-# 15 fangzhen
+# 15 仿真
 
 ## 配置PX4
 
@@ -626,6 +629,8 @@ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/PX4-Autopilot/Tools/sitl_gazebo
 
 source ~/.bashrc 
 ```
+
+
 
 
 
@@ -705,4 +710,30 @@ cp -r sitl_config/launch/* ~/PX4-Autopilot/launch/
 cd ~/.gazebo/models/
 rm -r stereo_camera/ 3d_lidar/ 3d_gpu_lidar/ hokuyo_lidar/
 ```
+
+#  16 ORB-slam3 
+
+```
+xhost +
+docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix:rw --privileged --gpus all -e DISPLAY=:1 -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=all -e PYTHONUNBUFFERED=1 -e QT_X11_NO_MITSHM=1 orbslam3:latest /bin/bash
+
+docker build -t myapp:v1 .
+```
+
+
+
+```
+docker exec -it b14 /bin/bash
+
+
+./Examples/Stereo/stereo_euroc ./Vocabulary/ORBvoc.txt ./Examples/Stereo/EuRoC.yaml ../Datasets/EuRoC/MH01 ./Examples/Stereo/EuRoC_TimeStamps/MH01.txt
+
+./Monocular/mono_euroc ../Vocabulary/ORBvoc.txt ./Monocular/EuRoC.yaml ../Datasets/EuRoC/MH01 ./Monocular/EuRoC_TimeStamps/MH01.txt
+```
+
+
+
+
+
+
 
