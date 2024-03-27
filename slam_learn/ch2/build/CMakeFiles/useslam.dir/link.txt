@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/useslam.dir/usehelloslam.cpp.o -o useslam  -Wl,-rpath,/home/sbim/SLAM_LEARN/slam_learn/ch2/build libhello_shared.so 
