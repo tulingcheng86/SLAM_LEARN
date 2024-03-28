@@ -68,6 +68,8 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "semaphore": "cpp",
-        "__nullptr": "cpp"
+        "__nullptr": "cpp",
+        "__bit_reference": "cpp",
+        "core": "cpp"
     }
 }
