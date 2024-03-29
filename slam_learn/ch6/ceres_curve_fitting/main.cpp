@@ -21,6 +21,7 @@ struct CURVE_FITTING_COST
     const double _x, _y;    // x,y数据
 };
 
+//在main函数中，首先定义了真实的参数a、b、c，数据点数N，以及噪声Sigma值w_sigma。然后使用随机数生成器生成带有噪声的样本数据。
 int main ( int argc, char** argv )
 {
     double a=1.0, b=2.0, c=1.0;         // 真实参数值
@@ -30,7 +31,8 @@ int main ( int argc, char** argv )
     double abc[3] = {0,0,0};            // abc参数的估计值
 
     vector<double> x_data, y_data;      // 数据
-
+    
+//使用随机数生成器生成带有噪声的样本数据。
     cout<<"generating data: "<<endl;
     for ( int i=0; i<N; i++ )
     {

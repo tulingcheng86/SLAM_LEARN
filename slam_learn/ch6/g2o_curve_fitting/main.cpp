@@ -7,7 +7,7 @@
 #include <g2o/core/optimization_algorithm_dogleg.h>
 #include <g2o/solvers/dense/linear_solver_dense.h>
 #include <Eigen/Core>
-#include <opencv2/core/core.hpp>
+#include <opencv2/opencv.hpp>
 #include <cmath>
 #include <memory>
 #include <chrono>
@@ -50,7 +50,6 @@ public:
 public:
     double _x;  // x 值， y 值为 _measurement
 };
-
 int main( int argc, char** argv )
 {
     double a=1.0, b=2.0, c=1.0;         // 真实参数值
