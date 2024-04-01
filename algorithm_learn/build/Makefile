@@ -155,6 +155,32 @@ orb/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/orb.dir/build.make CMakeFiles/orb.dir/build
 .PHONY : orb/fast
 
+#=============================================================================
+# Target rules for targets named vo
+
+# Build rule for target.
+vo: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 vo
+.PHONY : vo
+
+# fast build rule for target.
+vo/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vo.dir/build.make CMakeFiles/vo.dir/build
+.PHONY : vo/fast
+
+#=============================================================================
+# Target rules for targets named image_stitching
+
+# Build rule for target.
+image_stitching: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 image_stitching
+.PHONY : image_stitching
+
+# fast build rule for target.
+image_stitching/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/image_stitching.dir/build.make CMakeFiles/image_stitching.dir/build
+.PHONY : image_stitching/fast
+
 KLT.o: KLT.cpp.o
 .PHONY : KLT.o
 
@@ -203,6 +229,30 @@ ORB_featrue.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ORB_featrue.dir/build.make CMakeFiles/ORB_featrue.dir/ORB_featrue.cpp.s
 .PHONY : ORB_featrue.cpp.s
 
+image_stitching.o: image_stitching.cpp.o
+.PHONY : image_stitching.o
+
+# target to build an object file
+image_stitching.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/image_stitching.dir/build.make CMakeFiles/image_stitching.dir/image_stitching.cpp.o
+.PHONY : image_stitching.cpp.o
+
+image_stitching.i: image_stitching.cpp.i
+.PHONY : image_stitching.i
+
+# target to preprocess a source file
+image_stitching.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/image_stitching.dir/build.make CMakeFiles/image_stitching.dir/image_stitching.cpp.i
+.PHONY : image_stitching.cpp.i
+
+image_stitching.s: image_stitching.cpp.s
+.PHONY : image_stitching.s
+
+# target to generate assembly for a file
+image_stitching.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/image_stitching.dir/build.make CMakeFiles/image_stitching.dir/image_stitching.cpp.s
+.PHONY : image_stitching.cpp.s
+
 orb.o: orb.cpp.o
 .PHONY : orb.o
 
@@ -227,6 +277,30 @@ orb.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/orb.dir/build.make CMakeFiles/orb.dir/orb.cpp.s
 .PHONY : orb.cpp.s
 
+vo.o: vo.cpp.o
+.PHONY : vo.o
+
+# target to build an object file
+vo.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vo.dir/build.make CMakeFiles/vo.dir/vo.cpp.o
+.PHONY : vo.cpp.o
+
+vo.i: vo.cpp.i
+.PHONY : vo.i
+
+# target to preprocess a source file
+vo.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vo.dir/build.make CMakeFiles/vo.dir/vo.cpp.i
+.PHONY : vo.cpp.i
+
+vo.s: vo.cpp.s
+.PHONY : vo.s
+
+# target to generate assembly for a file
+vo.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vo.dir/build.make CMakeFiles/vo.dir/vo.cpp.s
+.PHONY : vo.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -237,16 +311,24 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... KLT"
 	@echo "... ORB_featrue"
+	@echo "... image_stitching"
 	@echo "... orb"
+	@echo "... vo"
 	@echo "... KLT.o"
 	@echo "... KLT.i"
 	@echo "... KLT.s"
 	@echo "... ORB_featrue.o"
 	@echo "... ORB_featrue.i"
 	@echo "... ORB_featrue.s"
+	@echo "... image_stitching.o"
+	@echo "... image_stitching.i"
+	@echo "... image_stitching.s"
 	@echo "... orb.o"
 	@echo "... orb.i"
 	@echo "... orb.s"
+	@echo "... vo.o"
+	@echo "... vo.i"
+	@echo "... vo.s"
 .PHONY : help
 
 

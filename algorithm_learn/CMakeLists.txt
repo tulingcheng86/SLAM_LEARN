@@ -21,3 +21,9 @@ target_link_libraries(ORB_featrue ${OpenCV_LIBRARIES} ${realsense2_LIBRARY})
 add_executable(orb orb.cpp)
 target_link_libraries(orb ${OpenCV_LIBRARIES})
 
+add_executable(vo vo.cpp)
+target_link_libraries(vo ${OpenCV_LIBRARIES})
+
+add_executable(image_stitching image_stitching.cpp)
+target_link_libraries(image_stitching ${OpenCV_LIBRARIES})
+

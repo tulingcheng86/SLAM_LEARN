@@ -1,5 +1,7 @@
 /home/sbim/SLAM_LEARN/algorithm_learn/build/CMakeFiles/KLT.dir
 /home/sbim/SLAM_LEARN/algorithm_learn/build/CMakeFiles/ORB_featrue.dir
 /home/sbim/SLAM_LEARN/algorithm_learn/build/CMakeFiles/orb.dir
+/home/sbim/SLAM_LEARN/algorithm_learn/build/CMakeFiles/vo.dir
+/home/sbim/SLAM_LEARN/algorithm_learn/build/CMakeFiles/image_stitching.dir
 /home/sbim/SLAM_LEARN/algorithm_learn/build/CMakeFiles/edit_cache.dir
 /home/sbim/SLAM_LEARN/algorithm_learn/build/CMakeFiles/rebuild_cache.dir

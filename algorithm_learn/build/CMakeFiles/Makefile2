@@ -66,6 +66,8 @@ CMAKE_BINARY_DIR = /home/sbim/SLAM_LEARN/algorithm_learn/build
 all: CMakeFiles/KLT.dir/all
 all: CMakeFiles/ORB_featrue.dir/all
 all: CMakeFiles/orb.dir/all
+all: CMakeFiles/vo.dir/all
+all: CMakeFiles/image_stitching.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -76,6 +78,8 @@ preinstall:
 clean: CMakeFiles/KLT.dir/clean
 clean: CMakeFiles/ORB_featrue.dir/clean
 clean: CMakeFiles/orb.dir/clean
+clean: CMakeFiles/vo.dir/clean
+clean: CMakeFiles/image_stitching.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -137,7 +141,7 @@ CMakeFiles/ORB_featrue.dir/clean:
 CMakeFiles/orb.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/orb.dir/build.make CMakeFiles/orb.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/orb.dir/build.make CMakeFiles/orb.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/sbim/SLAM_LEARN/algorithm_learn/build/CMakeFiles --progress-num=5,6 "Built target orb"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/sbim/SLAM_LEARN/algorithm_learn/build/CMakeFiles --progress-num=7,8 "Built target orb"
 .PHONY : CMakeFiles/orb.dir/all
 
 # Build rule for subdir invocation for target.
@@ -155,6 +159,58 @@ orb: CMakeFiles/orb.dir/rule
 CMakeFiles/orb.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/orb.dir/build.make CMakeFiles/orb.dir/clean
 .PHONY : CMakeFiles/orb.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/vo.dir
+
+# All Build rule for target.
+CMakeFiles/vo.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vo.dir/build.make CMakeFiles/vo.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vo.dir/build.make CMakeFiles/vo.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/sbim/SLAM_LEARN/algorithm_learn/build/CMakeFiles --progress-num=9,10 "Built target vo"
+.PHONY : CMakeFiles/vo.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/vo.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/sbim/SLAM_LEARN/algorithm_learn/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/vo.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/sbim/SLAM_LEARN/algorithm_learn/build/CMakeFiles 0
+.PHONY : CMakeFiles/vo.dir/rule
+
+# Convenience name for target.
+vo: CMakeFiles/vo.dir/rule
+.PHONY : vo
+
+# clean rule for target.
+CMakeFiles/vo.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vo.dir/build.make CMakeFiles/vo.dir/clean
+.PHONY : CMakeFiles/vo.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/image_stitching.dir
+
+# All Build rule for target.
+CMakeFiles/image_stitching.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/image_stitching.dir/build.make CMakeFiles/image_stitching.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/image_stitching.dir/build.make CMakeFiles/image_stitching.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/sbim/SLAM_LEARN/algorithm_learn/build/CMakeFiles --progress-num=5,6 "Built target image_stitching"
+.PHONY : CMakeFiles/image_stitching.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/image_stitching.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/sbim/SLAM_LEARN/algorithm_learn/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/image_stitching.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/sbim/SLAM_LEARN/algorithm_learn/build/CMakeFiles 0
+.PHONY : CMakeFiles/image_stitching.dir/rule
+
+# Convenience name for target.
+image_stitching: CMakeFiles/image_stitching.dir/rule
+.PHONY : image_stitching
+
+# clean rule for target.
+CMakeFiles/image_stitching.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/image_stitching.dir/build.make CMakeFiles/image_stitching.dir/clean
+.PHONY : CMakeFiles/image_stitching.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

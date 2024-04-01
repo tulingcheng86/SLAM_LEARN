@@ -468,3 +468,65 @@ https://blog.csdn.net/weixin_45634390/article/details/137154084?csdn_share_tail=
 
 
 
+## PnP
+
+
+
+
+
+
+
+![image-20240401114752634](/home/sbim/.config/Typora/typora-user-images/image-20240401114752634.png)
+
+
+
+
+
+
+
+## P3P
+
+P3P 是一种经典的相机定位算法，通常用于解决相机位姿估计问题。P3P 是 Perspective-Three-Point 的缩写，指的是使用至少三个已知的 3D 点和它们在图像中对应的 2D 点，来计算相机的位姿（平移和旋转）的算法。
+
+
+
+## 前端里程计 直接法
+
+https://zhuanlan.zhihu.com/p/61883169
+
+## 光流
+
+![image-20240401145811315](/home/sbim/.config/Typora/typora-user-images/image-20240401145811315.png)
+
+
+
+
+
+## LK光流法
+
+![image-20240401152100694](/home/sbim/.config/Typora/typora-user-images/image-20240401152100694.png)
+
+![image-20240401152402558](/home/sbim/.config/Typora/typora-user-images/image-20240401152402558.png)
+
+
+
+**LK 光流跟踪法避免了描述子的计算与匹配，但本身也需要一定的计算量。在我们的计算平台上，**
+**使用 LK 光流能够节省一定的计算量，但在具体 SLAM 系统中使用光流还是匹配描述子，**
+**最好是亲自做实验测试一下。**
+
+
+
+![image-20240401152455075](/home/sbim/.config/Typora/typora-user-images/image-20240401152455075.png)
+
+
+
+
+
+
+
+
+
+
+
+# 第九讲 实践：设计前端
+

@@ -1,7 +1,0 @@
-/home/sbim/SLAM_LEARN/slam_learn/ch7/build/CMakeFiles/feature_extraction.dir
-/home/sbim/SLAM_LEARN/slam_learn/ch7/build/CMakeFiles/pose_estimation_2d2d.dir
-/home/sbim/SLAM_LEARN/slam_learn/ch7/build/CMakeFiles/triangulation.dir
-/home/sbim/SLAM_LEARN/slam_learn/ch7/build/CMakeFiles/pose_estimation_3d2d.dir
-/home/sbim/SLAM_LEARN/slam_learn/ch7/build/CMakeFiles/pose_estimation_3d3d.dir
-/home/sbim/SLAM_LEARN/slam_learn/ch7/build/CMakeFiles/edit_cache.dir
-/home/sbim/SLAM_LEARN/slam_learn/ch7/build/CMakeFiles/rebuild_cache.dir
