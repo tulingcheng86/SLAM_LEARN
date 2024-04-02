@@ -530,3 +530,30 @@ https://zhuanlan.zhihu.com/p/61883169
 
 # 第九讲 实践：设计前端
 
+
+
+
+
+
+
+
+
+
+
+
+
+# 第十讲 后端1
+
+**BA，Bundle Adjustment，是指从视觉重建中提炼出最优的3D模型和相机参数（内参数和外参数）。**
+
+
+
+
+
+
+
+
+
+## 非线性优化（BA与图优化）
+
+https://zhuanlan.zhihu.com/p/65666168
