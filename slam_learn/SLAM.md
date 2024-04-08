@@ -557,3 +557,53 @@ https://zhuanlan.zhihu.com/p/61883169
 ## 非线性优化（BA与图优化）
 
 https://zhuanlan.zhihu.com/p/65666168
+
+
+
+
+
+
+
+# 第十二讲 回环检测
+
+**回环检测模块能够给出除了相邻帧之外的一些时隔更加久远的约束。**
+
+**在某些时候，我们把仅有前端和局部后端的系统称为VO，而把带有回环检测和全局后端的系统称为SLAM。**
+
+## 准确率和召回率
+
+![img](https://zhoush210.github.io/img/in_post/SLAM14/12/1.png)
+
+
+
+假阳性又称**感知偏差**，假阴性又称**感知变异**。
+
+**准确率**：Precision=TP/(TP+FP)，描述算法提取的**所有回环**中确实是**真实回环**的概率。
+
+**召回率**：Recall=TP/(TP+FN)，描述在所有**真实回环**中被**正确检测**出来的概率。
+
+
+
+
+
+## 词袋模型
+
+![image-20240403185608369](/home/sbim/.config/Typora/typora-user-images/image-20240403185608369.png)
+
+
+
+## 实践 
+
+https://blog.csdn.net/weixin_45080292/article/details/123225578
+
+
+
+
+
+
+
+# 第十三讲 建图
+
+![image-20240408102110918](/home/sbim/.config/Typora/typora-user-images/image-20240408102110918.png)
+
+![image-20240408102624081](/home/sbim/.config/Typora/typora-user-images/image-20240408102624081.png)
