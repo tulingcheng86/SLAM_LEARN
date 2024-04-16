@@ -128,6 +128,8 @@ export ROS_DOMAIN_ID=30
 export ROS_MASTER_URI=http://192.168.100.207:11311
 export ROS_IP=192.168.100.207
 
+100.132
+
 忘记说了，另一台电脑上是用docker运行的ros镜像，这个docker里的ros能订阅到jetson nano发布的话题吗
 **ros镜像 ip为** 172.17.0.2
 export ROS_MASTER_URI=http://192.168.100.207:11311

@@ -527,7 +527,6 @@ roslaunch rtabmap_examples test_d435i_vio.launch args:="--Odom/Strategy 9 OdomVI
 </include>
 
 </launch>
-
 ```
 
 
