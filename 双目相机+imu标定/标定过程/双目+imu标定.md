@@ -20,3 +20,5 @@ rosrun kalibr kalibr_calibrate_imu_camera --target target_6x7.yaml --bag camera_
 
 **运行时间会比较长，结果生成yaml文件**
 
+
+

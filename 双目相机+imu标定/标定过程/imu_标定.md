@@ -131,6 +131,7 @@ Acc:
 # 保存结果
 为了后面的相机-IMU标定，我们需要gyr_n,gyr_w,acc_n,acc_w四个量，新建imu.yaml，保存下来
 
+```
 rostopic: /sbpilot/imu
 update_rate: 200.0 #Hz
 
@@ -138,6 +139,9 @@ accelerometer_noise_density: 7.5605406743003934e-03
 accelerometer_random_walk: 9.6403789014655721e-04
 gyroscope_noise_density: 2.0241157583860731e-03
 gyroscope_random_walk: 1.6755331439024962e-04
+```
+
+
 
 --------------------------------------------------------
 IMU标定完成
