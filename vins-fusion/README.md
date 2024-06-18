@@ -186,10 +186,10 @@ roslaunch vins vins_rviz.launch
  
 rosrun vins kitti_odom_test ~/catkin_ws/src/VINS-Fusion/config/kitti_odom/kitti_config00-02.yaml YOUR_DATASET_FOLDER/sequences/00/ 
 ```
- 
+
 
 rosrun vins kitti_odom_test ~/catkin_ws1/src/VINS-Fusion/config/kitti_odom/kitti_config00-02.yaml ~/Downloads/00/
- 
+
 
 **ROS2 版本** （实现）
 
@@ -197,19 +197,16 @@ rosrun vins kitti_odom_test ~/catkin_ws1/src/VINS-Fusion/config/kitti_odom/kitti
 
 https://github.com/zinuok/VINS-Fusion-ROS2
 
-
 **参考这个issue**
 https://github.com/zinuok/VINS-Fusion-ROS2/issues/8
 
 “@cvirxsc Try this one: https://github.com/bonabai/VINS-Fusion-ROS2.git, and checkout no_cuda branch.”
 
-
 **用这个作者的**
 https://github.com/bonabai/VINS-Fusion-ROS2
 
-
 **依赖**
-环境是ubuntu 22.04   roshumble
+环境是ubuntu 22.04   ros humble
 opencv 应该是自带的
 
 Eigen-3.3.9
