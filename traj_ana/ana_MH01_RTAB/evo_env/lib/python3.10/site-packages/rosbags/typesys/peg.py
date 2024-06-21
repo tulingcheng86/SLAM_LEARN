@@ -1,0 +1,346 @@
+# Copyright 2020 - 2024 Ternaris
+# SPDX-License-Identifier: Apache-2.0
+"""PEG Parser.
+
+Parsing expression grammar inspired parser for simple EBNF-like notations. It
+implements just enough features to support parsing of the different ROS message
+definition formats.
+
+"""
+
+from __future__ import annotations
+
+import re
+import sys
+from typing import TYPE_CHECKING
+
+if sys.version_info >= (3, 12):  # pragma: no cover
+    from typing import override
+else:  # pragma: no cover
+    from typing_extensions import override
+
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Mapping
+    from re import Pattern
+    from typing import TypeAlias, TypedDict
+
+    class Node(TypedDict):
+        """Tree node."""
+
+        node: str
+        data: Tree
+
+    Tree: TypeAlias = 'tuple[Tree, ...] | Node | str'
+
+
+class Rule:
+    """Rule base class."""
+
+    LIT = 'LITERAL'
+
+    def __init__(
+        self,
+        value: str | Pattern[str] | Rule | list[Rule],
+        rules: dict[str, Rule],
+        whitespace: Pattern[str],
+        name: str | None = None,
+    ) -> None:
+        """Initialize.
+
+        Args:
+            value: Value of this rule.
+            rules: Grammar containing all rules.
+            whitespace: Whitespace pattern.
+            name: Name of this rule.
+
+        """
+        self.value = value
+        self.rules = rules
+        self.name = name
+        self.whitespace = whitespace
+
+    def skip_ws(self, text: str, pos: int) -> int:
+        """Skip whitespace."""
+        match = self.whitespace.match(text, pos)
+        return match.span()[1] if match else pos
+
+    def make_node(self, data: Tree) -> Tree:
+        """Make node for parse tree."""
+        return {'node': self.name, 'data': data} if self.name else data
+
+    def parse(self, text: str, pos: int) -> tuple[int, Tree]:
+        """Apply rule at position."""
+        raise NotImplementedError  # pragma: no cover
+
+
+class RuleLiteral(Rule):
+    """Rule to match string literal."""
+
+    value: str
+
+    def __init__(
+        self,
+        value: str,
+        rules: dict[str, Rule],
+        whitespace: Pattern[str],
+        name: str | None = None,
+    ) -> None:
+        """Initialize.
+
+        Args:
+            value: Value of this rule.
+            rules: Grammar containing all rules.
+            whitespace: Whitespace pattern.
+            name: Name of this rule.
+
+        """
+        super().__init__(value, rules, whitespace, name)
+        self.value = value[1:-1].replace("\\'", "'")
+
+    @override
+    def parse(self, text: str, pos: int) -> tuple[int, Tree]:
+        """Apply rule at position."""
+        value = self.value
+        assert isinstance(value, str)
+        if text[pos : pos + len(value)] == value:
+            npos = pos + len(value)
+            npos = self.skip_ws(text, npos)
+            return npos, (self.LIT, value)
+        return -1, ()
+
+
+class RuleRegex(Rule):
+    """Rule to match regular expression."""
+
+    value: Pattern[str]
+
+    def __init__(
+        self,
+        value: str,
+        rules: dict[str, Rule],
+        whitespace: Pattern[str],
+        name: str | None = None,
+    ) -> None:
+        """Initialize.
+
+        Args:
+            value: Value of this rule.
+            rules: Grammar containing all rules.
+            whitespace: Whitespace pattern.
+            name: Name of this rule.
+
+        """
+        super().__init__(value, rules, whitespace, name)
+        self.value = re.compile(value[2:-1], re.M | re.S)
+
+    @override
+    def parse(self, text: str, pos: int) -> tuple[int, Tree]:
+        """Apply rule at position."""
+        match = self.value.match(text, pos)
+        if not match:
+            return -1, ()
+        npos = self.skip_ws(text, match.span()[1])
+        return npos, self.make_node(match.group())
+
+
+class RuleToken(Rule):
+    """Rule to match token."""
+
+    value: str
+
+    @override
+    def parse(self, text: str, pos: int) -> tuple[int, Tree]:
+        """Apply rule at position."""
+        token = self.rules[self.value]
+        npos, data = token.parse(text, pos)
+        if npos == -1:
+            return npos, data
+        return npos, self.make_node(data)
+
+
+class RuleOneof(Rule):
+    """Rule to match first matching subrule."""
+
+    value: list[Rule]
+
+    @override
+    def parse(self, text: str, pos: int) -> tuple[int, Tree]:
+        """Apply rule at position."""
+        for value in self.value:
+            npos, data = value.parse(text, pos)
+            if npos != -1:
+                return npos, self.make_node(data)
+        return -1, ()
+
+
+class RuleSequence(Rule):
+    """Rule to match a sequence of subrules."""
+
+    value: list[Rule]
+
+    @override
+    def parse(self, text: str, pos: int) -> tuple[int, Tree]:
+        """Apply rule at position."""
+        data: list[Tree] = []
+        npos = pos
+        for value in self.value:
+            npos, node = value.parse(text, npos)
+            if npos == -1:
+                return -1, ()
+            data.append(node)
+        return npos, self.make_node(tuple(data))
+
+
+class RuleZeroPlus(Rule):
+    """Rule to match zero or more occurences of subrule."""
+
+    value: Rule
+
+    @override
+    def parse(self, text: str, pos: int) -> tuple[int, Tree]:
+        """Apply rule at position."""
+        data: list[Tree] = []
+        lpos = pos
+        while True:
+            npos, node = self.value.parse(text, lpos)
+            if npos == -1:
+                return lpos, self.make_node(tuple(data))
+            data.append(node)
+            lpos = npos
+
+
+class RuleOnePlus(Rule):
+    """Rule to match one or more occurences of subrule."""
+
+    value: Rule
+
+    @override
+    def parse(self, text: str, pos: int) -> tuple[int, Tree]:
+        """Apply rule at position."""
+        npos, node = self.value.parse(text, pos)
+        if npos == -1:
+            return -1, ()
+        data = [node]
+        lpos = npos
+        while True:
+            npos, node = self.value.parse(text, lpos)
+            if npos == -1:
+                return lpos, self.make_node(tuple(data))
+            data.append(node)
+            lpos = npos
+
+
+class RuleZeroOne(Rule):
+    """Rule to match zero or one occurence of subrule."""
+
+    value: Rule
+
+    @override
+    def parse(self, text: str, pos: int) -> tuple[int, Tree]:
+        """Apply rule at position."""
+        npos, node = self.value.parse(text, pos)
+        if npos == -1:
+            return pos, self.make_node(())
+        return npos, self.make_node((node,))
+
+
+def identity(value: Tree) -> Tree:
+    """Identity Transform."""
+    return value
+
+
+class Visitor:
+    """Visitor transforming parse trees."""
+
+    RULES: Mapping[str, Rule] = {}
+
+    def __init__(self) -> None:
+        """Initialize."""
+
+    def visit(self, tree: Tree) -> Tree:
+        """Visit all nodes in parse tree."""
+        if isinstance(tree, tuple):
+            return tuple(self.visit(x) for x in tree)
+
+        if isinstance(tree, str):
+            return tree
+
+        assert isinstance(tree, dict), tree
+        assert list(tree.keys()) == ['node', 'data'], tree.keys()
+
+        tree['data'] = self.visit(tree['data'])
+        func: Callable[[Tree], Tree] = getattr(self, f'visit_{tree["node"]}', identity)
+        return func(tree['data'])
+
+
+def split_token(tok: str) -> list[str]:
+    """Split repetition and grouping tokens."""
+    return list(filter(None, re.split(r'(^\()|(\)(?=[*+?]?$))|([*+?]$)', tok)))
+
+
+def collapse_tokens(
+    toks: list[Rule | None],
+    rules: dict[str, Rule],
+    whitespace: Pattern[str],
+) -> Rule:
+    """Collapse linear list of tokens to oneof of sequences."""
+    value: list[Rule] = []
+    seq: list[Rule] = []
+    for tok in toks:
+        if tok:
+            seq.append(tok)
+        else:
+            value.append(RuleSequence(seq, rules, whitespace) if len(seq) > 1 else seq[0])
+            seq = []
+    value.append(RuleSequence(seq, rules, whitespace) if len(seq) > 1 else seq[0])
+    return RuleOneof(value, rules, whitespace) if len(value) > 1 else value[0]
+
+
+RXWS = re.compile(r'\s+', re.M | re.S)
+
+
+def parse_grammar(
+    grammar: str,
+    whitespace: Pattern[str] = RXWS,
+) -> dict[str, Rule]:
+    """Parse grammar into rule dictionary."""
+    rules: dict[str, Rule] = {}
+    for token in grammar.split('\n\n'):
+        lines = token.strip().split('\n')
+        name, *defs = lines
+        items = [z for x in defs for y in x.split(' ') if y for z in split_token(y) if z]
+        assert items
+        assert items[0] == '='
+        _ = items.pop(0)
+        stack: list[Rule | None] = []
+        parens: list[int] = []
+        while items:
+            tok = items.pop(0)
+            if tok in {'*', '+', '?'}:
+                assert isinstance(stack[-1], Rule)
+                stack[-1] = {
+                    '*': RuleZeroPlus,
+                    '+': RuleOnePlus,
+                    '?': RuleZeroOne,
+                }[tok](stack[-1], rules, whitespace)
+            elif tok == '/':
+                stack.append(None)
+            elif tok == '(':
+                parens.append(len(stack))
+            elif tok == ')':
+                index = parens.pop()
+                rule = collapse_tokens(stack[index:], rules, whitespace)
+                stack = stack[:index]
+                stack.append(rule)
+            elif len(tok) > 2 and tok[:2] == "r'":
+                stack.append(RuleRegex(tok, rules, whitespace))
+            elif tok[0] == "'":
+                stack.append(RuleLiteral(tok, rules, whitespace))
+            else:
+                stack.append(RuleToken(tok, rules, whitespace))
+
+        res = collapse_tokens(stack, rules, whitespace)
+        res.name = name
+        rules[name] = res
+    return rules

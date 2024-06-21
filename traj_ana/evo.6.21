@@ -1,0 +1,28 @@
+安装
+pip install evo --upgrade --no-binary evo
+
+运行时候有些依赖问题用GPT解决
+
+实在不行用虚拟环境
+python3 -m venv new_evo_env
+source new_evo_env/bin/activate
+pip install evo matplotlib
+pip install PyQt5
+
+授人以鱼不如授人以渔
+
+evo_traj tum trajectory1.txt trajectory2.txt --plot
+
+
+--align --ref MH01_ground.txt
+以MH01_ground.txt为参考对齐座标系
+evo_traj tum rtabmap_MH01_VINS.tum rtabmap_MH01.tum MH01_ground.txt --align --ref MH01_ground.txt --plot
+evo_traj tum issac.txt vinsfusion.txt ORBslam3.txt --plot
+
+估计出来的orbslam3轨迹特别大 要缩放（跟vins差了0.374倍）  
+evo_traj tum issac.txt vinsfusion.txt ORBslam3.txt --align --ref issac.txt --correct_scale --plot
+
+用脚本修改orbslam3轨迹规模后
+
+evo_traj tum issac.txt vinsfusion.txt ORBslam3.txt   --plot
+
