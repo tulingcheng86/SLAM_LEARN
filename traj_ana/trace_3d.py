@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 使用pandas读取数据，并且只选择前8列
-data = pd.read_csv('/home/sbim/vio_loop.txt', delimiter=',', header=None, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
+data = pd.read_csv('vio_loop.txt', delimiter=',', header=None, usecols=[0, 1, 2, 3, 4, 5, 6, 7])
 
 # 将数据转换为numpy数组用于分析
 data_np = data.to_numpy()
